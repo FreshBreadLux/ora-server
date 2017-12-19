@@ -20,3 +20,9 @@ router.get('/next', (req, res, next) => {
   .then(prayer => res.send(prayer))
   .catch(console.error)
 })
+
+router.post('/', (req, res, next) => {
+  Prayer.create(req.body)
+  .then(prayer => res.json(prayer))
+  .catch(console.error)
+})
