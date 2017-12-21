@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
+const Following = require('../db/models/following')
 const jwt = require('jsonwebtoken')
 const config = require('../config.json')
 
@@ -18,6 +19,14 @@ router.get('/:userId/prayers', (req, res, next) => {
   })
   .then(prayers => res.status(201).send(prayers))
   .catch(console.error)
+})
+
+router.get('/:userId/follows', (req, res, next) => {
+  Following.findAll({
+    where: {
+      userId: req.params.userId
+    }
+  })
 })
 
 router.post('/', (req, res, next) => {
