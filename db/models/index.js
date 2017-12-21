@@ -7,8 +7,8 @@ User.hasMany(Prayer)
 Prayer.belongsTo(User)
 User.belongsToMany(Prayer, { through: 'Flagged' })
 Prayer.belongsToMany(User, { through: 'Flagged' })
-User.belongsToMany(Prayer, { through: Followings })
-Prayer.belongsToMany(User, { through: Followings })
+User.belongsToMany(Prayer, { as: 'Follows', through: Followings })
+Prayer.belongsToMany(User, { as: 'Follows', through: Followings })
 
 module.exports = {
   User,

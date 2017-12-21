@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
-const Following = require('../db/models/following')
+const Followings = require('../db/models/followings')
 const jwt = require('jsonwebtoken')
 const config = require('../config.json')
 
@@ -22,7 +22,7 @@ router.get('/:userId/prayers', (req, res, next) => {
 })
 
 router.get('/:userId/follows', (req, res, next) => {
-  Following.findAll({
+  Followings.findAll({
     where: {
       userId: req.params.userId
     }
