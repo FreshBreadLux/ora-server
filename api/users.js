@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
+const Prayer = require('../db/models/prayer')
 const jwt = require('jsonwebtoken')
 const config = require('../config.json')
 
@@ -9,8 +10,14 @@ function createToken(user) {
   return jwt.sign({email: user.email}, config.secret)
 }
 
-router.get('/', (req, res, next) => {
-  res.json('Test Get Route for users')
+router.get('/:userId/prayers', (req, res, next) => {
+  Prayer.findAll({
+    where: {
+      userId: req.params.userId
+    }
+  })
+  .then(prayers => res.status(201).send(prayers))
+  .catch(console.error)
 })
 
 router.post('/', (req, res, next) => {
