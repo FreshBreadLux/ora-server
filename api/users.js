@@ -22,12 +22,17 @@ router.get('/:userId/prayers', (req, res, next) => {
 })
 
 router.get('/:userId/follows', (req, res, next) => {
-  Followings.findAll({
+  User.findOne({
     where: {
-      userId: req.params.userId
-    }
+      id: req.params.userId
+    },
+    include: [
+      { model: Prayer, as: 'Follows' }
+    ]
+  }) // TODO: NEED TO SANITIZE THE RETURNED DATA
+  .then(follows => {
+    res.status(201).send(follows.Follows)
   })
-  .then(follows => res.status(201).send(follows))
   .catch(console.error)
 })
 
