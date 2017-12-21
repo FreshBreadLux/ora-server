@@ -27,6 +27,8 @@ router.get('/:userId/follows', (req, res, next) => {
       userId: req.params.userId
     }
   })
+  .then(follows => res.status(201).send(follows))
+  .catch(console.error)
 })
 
 router.post('/', (req, res, next) => {
