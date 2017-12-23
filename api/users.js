@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
+const Follow = require('../db/models/follow')
 const jwt = require('jsonwebtoken')
 const config = require('../config.json')
 
@@ -21,17 +22,12 @@ router.get('/:userId/prayers', (req, res, next) => {
 })
 
 router.get('/:userId/follows', (req, res, next) => {
-  User.findOne({
+  Follow.findAll({
     where: {
-      id: req.params.userId
-    },
-    include: [
-      { model: Prayer, as: 'Follows' }
-    ]
-  }) // TODO: NEED TO SANITIZE THE RETURNED DATA
-  .then(follows => {
-    res.status(201).send(follows.Follows)
+      followerUserId: req.params.userId
+    }
   })
+  .then(follows => res.send(follows))
   .catch(console.error)
 })
 

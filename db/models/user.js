@@ -17,6 +17,9 @@ const User = db.define('user', {
   },
   salt: {
     type: Sequelize.STRING
+  },
+  pushToken: {
+    type: Sequelize.STRING
   }
 })
 
