@@ -1,16 +1,15 @@
 const User = require('./user')
 const Prayer = require('./prayer')
-const Followings = require('./followings')
+const Follow = require('./follow')
 
 /** Associations **/
 User.hasMany(Prayer)
 Prayer.belongsTo(User)
-User.belongsToMany(Prayer, { through: 'Flagged' })
-Prayer.belongsToMany(User, { through: 'Flagged' })
-User.belongsToMany(Prayer, { as: 'Follows', through: Followings })
-Prayer.belongsToMany(User, { as: 'Follows', through: Followings })
+Follow.hasOne(User)
+Follow.hasOne(Prayer)
 
 module.exports = {
   User,
   Prayer,
+  Follow
 }
