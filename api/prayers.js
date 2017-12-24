@@ -3,7 +3,7 @@ const Prayer = require('../db/models/prayer')
 
 module.exports = router
 
-router.get('/next', (req, res, next) => {
+router.put('/next', (req, res, next) => {
   Prayer.findOne({
     order: [['views']]
   })
