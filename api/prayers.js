@@ -1,11 +1,18 @@
 const router = require('express').Router()
 const Prayer = require('../db/models/prayer')
+const User = require('../db/models/user')
+const Expo = require('expo-server-sdk')
+let expo = new Expo()
 
 module.exports = router
 
-router.put('/next', (req, res, next) => {
+router.get('/next', (req, res, next) => {
   Prayer.findOne({
-    order: [['views']]
+    order: [['views']],
+    include: [{
+      model: User,
+      attributes: ['pushToken']
+    }]
   })
   .then(prayer => {
     let views = prayer.views
@@ -13,7 +20,20 @@ router.put('/next', (req, res, next) => {
       views: views + 1
     })
   })
-  .then(prayer => res.send(prayer))
+  .then(prayer => {
+    res.send(prayer)
+    if (prayer.user.pushToken) {
+      return expo.sendPushNotificationAsync({
+        to: prayer.user.pushToken,
+        sound: 'default',
+        body: `Someone is praying for your intention: ${prayer.subject}`,
+        data: { ora: 'pro nobis' }
+      })
+    } else {
+      return null
+    }
+  })
+  .then(receipt => console.log(receipt))
   .catch(console.error)
 })
 
