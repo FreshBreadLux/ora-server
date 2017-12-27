@@ -11,7 +11,7 @@ router.get('/next', (req, res, next) => {
     order: [['views']],
     include: [{
       model: User,
-      attributes: ['pushToken']
+      attributes: ['pushToken', 'id']
     }]
   })
   .then(prayer => {
@@ -21,8 +21,10 @@ router.get('/next', (req, res, next) => {
     })
   })
   .then(prayer => {
+    console.log('user: ', prayer.user)
     res.send(prayer)
-    if (prayer.user.pushToken) {
+    if (Expo.isExpoPushToken(prayer.user.pushToken)) {
+      console.log('The token is valid!')
       return expo.sendPushNotificationAsync({
         to: prayer.user.pushToken,
         sound: 'default',
@@ -30,7 +32,7 @@ router.get('/next', (req, res, next) => {
         data: { ora: 'pro nobis' }
       })
     } else {
-      return null
+      console.error(`${prayer.user.pushToken} is not valid`)
     }
   })
   .then(receipt => console.log(receipt))
