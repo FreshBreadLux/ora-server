@@ -10,6 +10,7 @@ module.exports = router
 router.put('/next', (req, res, next) => {
   Prayer.findOne({
     where: {
+      closed: false,
       userId: { [Op.ne]: req.body.userId }
     },
     order: [['views']],
