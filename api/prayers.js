@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const Op = require('sequelize').Op
 const Prayer = require('../db/models/prayer')
 const User = require('../db/models/user')
 const Expo = require('expo-server-sdk')
@@ -6,8 +7,11 @@ let expo = new Expo()
 
 module.exports = router
 
-router.get('/next', (req, res, next) => {
+router.put('/next', (req, res, next) => {
   Prayer.findOne({
+    where: {
+      userId: { [Op.ne]: req.body.userId }
+    },
     order: [['views']],
     include: [{
       model: User,
