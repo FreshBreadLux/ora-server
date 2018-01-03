@@ -1,12 +1,12 @@
 const router = require('express').Router()
-const Follow = require('../db/models/follow')
+const Flag = require('../db/models/flag')
 
 module.exports = router
 
 router.post('/', (req, res, next) => {
-  Follow.create(req.body)
-  .then(newFollow => {
-    res.status(201).send(newFollow)
+  Flag.create(req.body)
+  .then(newFlag => {
+    res.status(201).send(newFlag)
   })
   .catch(console.error)
 })
