@@ -41,6 +41,20 @@ router.put('/next', (req, res, next) => {
   .catch(console.error)
 })
 
+router.put('/update/:prayerId', (req, res, next) => {
+  Prayer.findById(req.params.prayerId)
+  .then(foundPrayer => foundPrayer.update(req.body))
+  .then(updatedPrayer => res.status(201).send(updatedPrayer))
+  .catch(console.error)
+})
+
+router.put('/close/:prayerId', (req, res, next) => {
+  Prayer.findById(req.params.prayerId)
+  .then(foundPrayer => foundPrayer.update(req.body))
+  .then(closedPrayer => res.status(201).send(closedPrayer))
+  .catch(console.error)
+})
+
 router.post('/', (req, res, next) => {
   Prayer.create(req.body)
   .then(prayer => res.json(prayer))
