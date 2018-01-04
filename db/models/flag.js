@@ -22,7 +22,7 @@ const Flag = db.define('flag', {
     type: Sequelize.TEXT,
     allowNull: false
   },
-  views: {
+  totalViews: {
     type: Sequelize.INTEGER,
     defaultValue: 0,
     allowNull: false
