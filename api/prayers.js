@@ -2,6 +2,7 @@ const router = require('express').Router()
 const Op = require('sequelize').Op
 const Prayer = require('../db/models/prayer')
 const User = require('../db/models/user')
+const Follow = require('../db/models/follow')
 const Expo = require('expo-server-sdk')
 let expo = new Expo()
 
@@ -44,7 +45,25 @@ router.put('/next', (req, res, next) => {
 router.put('/update/:prayerId', (req, res, next) => {
   Prayer.findById(req.params.prayerId)
   .then(foundPrayer => foundPrayer.update(req.body))
-  .then(updatedPrayer => res.status(201).send(updatedPrayer))
+  .then(updatedPrayer => {
+    res.status(201).send(updatedPrayer)
+    Follow.findAll({
+      where: {
+        prayerId: req.params.prayerId
+      }
+    })
+    .then(arrOfFollows => {
+      return arrOfFollows.map(follow => ({
+        to: follow.followerPushToken,
+        sound: 'default',
+        body: `A prayer you are following was updated: ${updatedPrayer.subject}`,
+        data: { ora: 'pro nobis' }
+      }))
+    })
+    .then(messages => {
+      return expo.sendPushNotificationsAsync(messages)
+    })
+  })
   .catch(console.error)
 })
 
