@@ -6,6 +6,9 @@ const Follow = db.define('follow', {
     type: Sequelize.INTEGER,
     allowNull: false
   },
+  followerPushToken: {
+    type: Sequelize.STRING,
+  },
   prayerId: {
     type: Sequelize.INTEGER,
     allowNull: false

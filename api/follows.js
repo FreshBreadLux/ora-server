@@ -1,10 +1,22 @@
 const router = require('express').Router()
 const Follow = require('../db/models/follow')
+const User = require('../db/models/user')
 
 module.exports = router
 
 router.post('/', (req, res, next) => {
-  Follow.create(req.body)
+  User.findById(req.body.userId)
+  .then(foundUser => {
+    return Follow.create({
+      followerUserId: foundUser.id,
+      followerPushToken: foundUser.pushToken,
+      prayerId: req.body.prayer.id,
+      subject: req.body.prayer.subject,
+      body: req.body.prayer.body,
+      views: req.body.prayer.views,
+      closed: req.body.prayer.closed,
+    })
+  })
   .then(newFollow => {
     res.status(201).send(newFollow)
   })
