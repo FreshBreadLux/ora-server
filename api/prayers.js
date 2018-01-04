@@ -14,16 +14,18 @@ router.put('/next', (req, res, next) => {
       closed: false,
       userId: { [Op.ne]: req.body.userId }
     },
-    order: [['views']],
+    order: [['dailyViews']],
     include: [{
       model: User,
       attributes: ['pushToken', 'id']
     }]
   })
   .then(prayer => {
-    let views = prayer.views
+    let dailyViews = prayer.dailyViews
+    let totalViews = prayer.totalViews
     return prayer.update({
-      views: views + 1
+      dailyViews: dailyViews + 1,
+      totalViews: totalViews + 1,
     })
   })
   .then(prayer => {

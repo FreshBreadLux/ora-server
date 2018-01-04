@@ -34,12 +34,15 @@ const clearDailyViews = () => {
   Prayer.update(
     { dailyViews: 0 },
     { where: {} })
-  .then(console.log('dailyViews reset to zero'))
+  .then(() => console.log('dailyViews reset to zero'))
   .catch(console.error)
 }
 
 const createApp = () => {
-  setInterval(clearDailyViews, 20000)
+
+  // setInterval to clear daily views every 24 hours
+  setInterval(clearDailyViews, 86400000)
+
   // logging middleware
   app.use(morgan('dev'))
 
