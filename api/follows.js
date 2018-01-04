@@ -13,7 +13,7 @@ router.post('/', (req, res, next) => {
       prayerId: req.body.prayer.id,
       subject: req.body.prayer.subject,
       body: req.body.prayer.body,
-      views: req.body.prayer.views,
+      totalViews: req.body.prayer.totalViews,
       closed: req.body.prayer.closed,
     })
   })

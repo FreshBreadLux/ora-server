@@ -32,13 +32,14 @@ passport.use(new Strategy(
 
 const clearDailyViews = () => {
   Prayer.update(
-    { views: 0 },
+    { dailyViews: 0 },
     { where: {} })
+  .then(console.log('dailyViews reset to zero'))
   .catch(console.error)
 }
 
 const createApp = () => {
-  setInterval(clearDailyViews, 30000)
+  setInterval(clearDailyViews, 20000)
   // logging middleware
   app.use(morgan('dev'))
 
