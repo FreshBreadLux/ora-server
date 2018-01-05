@@ -41,6 +41,15 @@ router.put('/next', (req, res, next) => {
       console.error(`${prayer.user.pushToken} is not valid`)
     }
   })
+  .then(() => {
+    User.findById(req.body.userId)
+    .then(foundUser => {
+      let totalPrayers = foundUser.totalPrayers
+      foundUser.update({
+        totalPrayers: totalPrayers + 1
+      })
+    })
+  })
   .catch(console.error)
 })
 

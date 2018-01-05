@@ -20,6 +20,11 @@ const User = db.define('user', {
   },
   pushToken: {
     type: Sequelize.STRING
+  },
+  totalPrayers: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false
   }
 })
 
