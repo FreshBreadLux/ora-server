@@ -11,6 +11,12 @@ function createToken(user) {
   return jwt.sign({email: user.email}, config.secret)
 }
 
+router.get('/:userId', (req, res, next) => {
+  User.findById(req.params.userId)
+  .then(foundUser => res.status(201).send(foundUser))
+  .catch(console.error)
+})
+
 router.get('/:userId/prayers', (req, res, next) => {
   Prayer.findAll({
     where: {
