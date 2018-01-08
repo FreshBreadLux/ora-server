@@ -42,13 +42,15 @@ router.put('/next', (req, res, next) => {
     }
   })
   .then(() => {
-    User.findById(req.body.userId)
-    .then(foundUser => {
-      let totalPrayers = foundUser.totalPrayers
-      foundUser.update({
-        totalPrayers: totalPrayers + 1
+    if (req.body.userId) {
+      User.findById(req.body.userId)
+      .then(foundUser => {
+        let totalPrayers = foundUser.totalPrayers
+        foundUser.update({
+          totalPrayers: totalPrayers + 1
+        })
       })
-    })
+    }
   })
   .catch(console.error)
 })
