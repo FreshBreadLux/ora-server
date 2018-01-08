@@ -55,6 +55,10 @@ const createApp = () => {
 
   // api route
   app.use('/api', require('./api'))
+  app.get('/', (req, res, next) => {
+    res.send('Welcome to Ora')
+    .catch(console.error)
+  })
 
   // static file-serving middleware
   app.use(express.static(path.join(__dirname, '..', 'public')))
