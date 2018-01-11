@@ -21,7 +21,8 @@ router.get('/:userId/prayers', (req, res, next) => {
   Prayer.findAll({
     where: {
       userId: req.params.userId
-    }
+    },
+    order: [['createdAt']]
   })
   .then(prayers => res.status(201).send(prayers))
   .catch(console.error)
@@ -31,7 +32,8 @@ router.get('/:userId/follows', (req, res, next) => {
   Follow.findAll({
     where: {
       followerUserId: req.params.userId
-    }
+    },
+    order: [['createdAt']]
   })
   .then(follows => res.send(follows))
   .catch(console.error)
