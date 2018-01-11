@@ -45,7 +45,7 @@ router.post('/', (req, res, next) => {
     userId: user.id,
     jwToken: createToken(user),
   }))
-  .catch(console.error)
+  .catch(error => res.send(error))
 })
 
 router.post('/sessions', (req, res, next) => {
@@ -63,5 +63,5 @@ router.post('/sessions', (req, res, next) => {
       })
     }
   })
-  .catch(console.error)
+  .catch(error => res.send(error))
 })
