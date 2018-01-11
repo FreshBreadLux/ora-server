@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const Follow = require('../db/models/follow')
 const User = require('../db/models/user')
+const Expo = require('expo-server-sdk')
+let expo = new Expo()
 
 module.exports = router
 
@@ -18,7 +20,18 @@ router.post('/', (req, res, next) => {
     })
   })
   .then(newFollow => {
+    let prayer = req.body.prayer
     res.status(201).send(newFollow)
+    if (Expo.isExpoPushToken(prayer.user.pushToken)) {
+      return expo.sendPushNotificationAsync({
+        to: prayer.user.pushToken,
+        sound: 'default',
+        body: `Someone started following your prayer: ${prayer.subject}`,
+        data: { ora: 'pro nobis' }
+      })
+    } else {
+      console.error(`${prayer.user.pushToken} is not valid`)
+    }
   })
   .catch(console.error)
 })
