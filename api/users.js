@@ -22,7 +22,7 @@ router.get('/:userId/prayers', (req, res, next) => {
     where: {
       userId: req.params.userId
     },
-    order: [['createdAt']]
+    order: [['createdAt', 'DESC']]
   })
   .then(prayers => res.status(201).send(prayers))
   .catch(console.error)
@@ -33,7 +33,7 @@ router.get('/:userId/follows', (req, res, next) => {
     where: {
       followerUserId: req.params.userId
     },
-    order: [['createdAt']]
+    order: [['createdAt', 'DESC']]
   })
   .then(follows => res.send(follows))
   .catch(console.error)
