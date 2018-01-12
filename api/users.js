@@ -40,12 +40,20 @@ router.get('/:userId/follows', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
+  if (!req.body.email || !req.body.password) {
+    res.status(400).send('You must send an email and password')
+  }
   User.create(req.body)
-  .then(user => res.status(201).send({
-    userId: user.id,
-    jwToken: createToken(user),
-  }))
-  .catch(error => res.send(error))
+  .then(user => {
+    res.status(201).send({
+      userId: user.id,
+      jwToken: createToken(user),
+    })
+  })
+  .catch(error => {
+    console.error(error)
+    res.status(401).send('That email already exists in our database')
+  })
 })
 
 router.post('/sessions', (req, res, next) => {
@@ -63,5 +71,5 @@ router.post('/sessions', (req, res, next) => {
       })
     }
   })
-  .catch(error => res.send(error))
+  .catch(console.error)
 })

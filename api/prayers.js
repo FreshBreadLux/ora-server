@@ -36,7 +36,6 @@ router.put('/next', (req, res, next) => {
         sound: 'default',
         body: `Someone is praying for your intention: ${prayer.subject}`,
         data: { ora: 'pro nobis' },
-        badge: 1,
       })
     } else {
       console.error(`${prayer.user.pushToken} is not valid`)

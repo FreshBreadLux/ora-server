@@ -28,7 +28,6 @@ router.post('/', (req, res, next) => {
         sound: 'default',
         body: `Someone started following your prayer: ${prayer.subject}`,
         data: { ora: 'pro nobis' },
-        badge: 1
       })
     } else {
       console.error(`${prayer.user.pushToken} is not valid`)
