@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const Follow = require('../db/models/follow')
 const User = require('../db/models/user')
+const Prayer = require('../db/models/prayer')
 const Expo = require('expo-server-sdk')
 let expo = new Expo()
 
@@ -16,6 +17,7 @@ router.post('/', (req, res, next) => {
       subject: req.body.prayer.subject,
       body: req.body.prayer.body,
       totalViews: req.body.prayer.totalViews,
+      totalFollows: req.body.prayer.totalFollows,
       closed: req.body.prayer.closed,
     })
   })
@@ -32,6 +34,15 @@ router.post('/', (req, res, next) => {
     } else {
       console.error(`${prayer.user.pushToken} is not valid`)
     }
+  })
+  .then(() => {
+    Prayer.findById(req.body.prayer.id)
+    .then(followedPrayer => {
+      let totalFollows = followedPrayer.totalFollows
+      followedPrayer.update({
+        totalFollows: totalFollows + 1
+      })
+    })
   })
   .catch(console.error)
 })
