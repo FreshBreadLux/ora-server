@@ -20,6 +20,11 @@ const Prayer = db.define('prayer', {
     defaultValue: 0,
     allowNull: false
   },
+  totalFollows: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false
+  },
   closed: {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
