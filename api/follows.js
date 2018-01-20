@@ -49,7 +49,17 @@ router.post('/', (req, res, next) => {
 
 router.delete('/:followId', (req, res, next) => {
   Follow.findById(req.params.followId)
-  .then(follow => follow.destroy())
+  .then(follow => {
+    let prayerId = follow.prayerId
+    Prayer.findById(prayerId)
+    .then(foundPrayer => {
+      let totalFollows = foundPrayer.totalFollows
+      foundPrayer.update({
+        totalFollows: totalFollows - 1
+      })
+    })
+    follow.destroy()
+  })
   .then(() => res.status(201).send('Unfollow successful'))
   .catch(console.error)
 })
