@@ -55,7 +55,7 @@ async function seed () {
     }),
     Prayer.create({
       subject: 'Feeling Grateful',
-      body: 'Please take a moment to pray for the Ora beta testers.\n\nChristian community is a powerful thing, and it\'s comforting to remember that there are people across the country praying for us. Let\'s pray for more projects like this, that encourage our generation to develop habits of devotion.\n\nLord, please open my heart to these prayer requests. Help me to see You in each of the authors. Give me a spirit of empathy that draws me into a closer relationship with You, and pour out Your grace into the hearts of all those that have asked for Your help.\nOur Father, Who art in heaven...\nAmen',
+      body: 'Please take a moment to pray for the Ora beta testers.\n\nChristian community is a powerful thing, and it\'s comforting to remember that there are people across the country praying for us. Let\'s pray for more projects like this, that encourage our generation to develop habits of devotion.\n\nLord, please open my heart to these prayer requests. Help me to see You in each of the authors. Give me a spirit of empathy that draws me into a closer relationship with You, and pour out Your grace into the hearts of all those that have asked for Your help.\n\nOur Father, Who art in heaven...\n\nAmen',
       views: 0,
       closed: false,
       userId: 2,
