@@ -5,17 +5,17 @@ const clearViews = () => {
   db.sync()
   .then(() => {
     console.log('db synced!')
-    Prayer.update(
+    return Prayer.update(
       { dailyViews: 0 },
       { where: {} })
-    .then(() => console.log('dailyViews reset to zero'))
-    .catch(console.error)
-  })
+    })
+  .then(() => console.log('dailyViews reset to zero'))
   .then(() => {
     console.log('closing db')
     db.close()
     console.log('db closed!')
   })
+  .catch(console.error)
 }
 
 clearViews()
