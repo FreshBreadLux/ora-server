@@ -14,7 +14,7 @@ router.put('/next', (req, res, next) => {
       closed: false,
       userId: { [Op.ne]: req.body.userId }
     },
-    order: [['dailyViews']],
+    order: [['dailyViews'], ['totalViews']],
     include: [{
       model: User,
       attributes: ['pushToken', 'id']
