@@ -34,17 +34,6 @@ router.get('/:userId/follows', (req, res, next) => {
   .then(foundUser => foundUser.getFollowed())
   .then(follows => res.send(follows))
   .catch(console.error)
-  // Follow.findAll({
-  //   where: {
-  //     userId: req.params.userId
-  //   },
-  //   order: [['createdAt', 'DESC']],
-  //   include: [{
-  //     model: Prayer,
-  //   }]
-  // })
-  // .then(follows => res.send(follows))
-  // .catch(console.error)
 })
 
 router.post('/', (req, res, next) => {
