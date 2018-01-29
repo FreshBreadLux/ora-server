@@ -12,14 +12,8 @@ router.post('/', (req, res, next) => {
   User.findById(req.body.userId)
   .then(foundUser => {
     return Follow.create({
-      followerUserId: foundUser.id,
-      followerPushToken: foundUser.pushToken,
+      userId: foundUser.id,
       prayerId: req.body.prayer.id,
-      subject: req.body.prayer.subject,
-      body: req.body.prayer.body,
-      totalViews: req.body.prayer.totalViews,
-      totalFollows: req.body.prayer.totalFollows,
-      closed: req.body.prayer.closed,
     })
   })
   .then(newFollow => {

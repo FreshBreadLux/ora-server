@@ -32,7 +32,7 @@ router.get('/:userId/prayers', (req, res, next) => {
 router.get('/:userId/follows', (req, res, next) => {
   Follow.findAll({
     where: {
-      followerUserId: req.params.userId
+      userId: req.params.userId
     },
     order: [['createdAt', 'DESC']]
   })
