@@ -21,6 +21,7 @@ passport.use(new Strategy(
   function (email, password, done) {
     User.findOne({where: {email}})
     .then(foundUser => {
+      // remember: `foundUser` might be null
       foundUser.correctPassword(password) ?
       done(null, foundUser) :
       done(null, false)

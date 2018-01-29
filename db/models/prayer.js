@@ -29,6 +29,10 @@ const Prayer = db.define('prayer', {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
     allowNull: false
+  },
+  userId: {
+    type: Sequelize.INTEGER,
+    allowNull: false
   }
 })
 
