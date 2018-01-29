@@ -1,31 +1,22 @@
 const User = require('./user')
 const Prayer = require('./prayer')
-const Follow = require('./follow')
 const Flag = require('./flag')
+const FlagReason = require('./flagreason')
 
 /** Associations **/
 User.hasMany(Prayer)
 Prayer.belongsTo(User)
-
-// game plan
-
-// associations
-
-// user has many prayer (as author)
-// user belongs to many prayer through Follow, as follow
-// prayer belongs to many user through Follow, as follower
-// user belongs to many prayer (and v.v.) through Flag, as reporter
-
-// tables:
-
-// user: id, name, etc
-// prayer: id, author_id, text
-// followers: follower_id, prayer_id
-// flags: prayer_id, reporter_id, reason
+User.belongsToMany(Prayer, { through: 'follow', as: 'followed' })
+Prayer.belongsToMany(User, { through: 'follow', as: 'follower' })
+User.belongsToMany(Prayer, { through: Flag, as: 'flagged' })
+Prayer.belongsToMany(User, { through: Flag, as: 'flagger' })
+User.belongsToMany(Prayer, { through: 'view', as: 'viewed' })
+Prayer.belongsToMany(User, { through: 'view', as: 'viewer' })
+Flag.belongsTo(FlagReason)
 
 module.exports = {
   User,
   Prayer,
-  Follow,
-  Flag
+  Flag,
+  FlagReason
 }
