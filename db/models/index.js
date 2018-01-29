@@ -4,8 +4,8 @@ const Follow = require('./follow')
 const Flag = require('./flag')
 
 /** Associations **/
-User.hasMany(Prayer, {as: 'author'})
-Prayer.belongsTo(User, {as: 'author'})
+User.hasMany(Prayer)
+Prayer.belongsTo(User)
 
 // game plan
 
