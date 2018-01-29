@@ -5,14 +5,14 @@ const Flag = require('./flag')
 
 /** Associations **/
 User.hasMany(Prayer)
-Prayer.belongsTo(User)
+Prayer.belongsTo(User, {as: 'author'})
 
 // game plan
 
 // associations
 
 // user has many prayer (as author)
-// user belongs to many prayer through Follow, as follower
+// user belongs to many prayer through Follow, as follow
 // prayer belongs to many user through Follow, as follower
 // user belongs to many prayer (and v.v.) through Flag, as reporter
 
