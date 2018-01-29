@@ -10,12 +10,7 @@ module.exports = router
 
 router.post('/', (req, res, next) => {
   User.findById(req.body.userId)
-  .then(foundUser => {
-    return Follow.create({
-      userId: foundUser.id,
-      prayerId: req.body.prayer.id,
-    })
-  })
+  .then(foundUser => foundUser.addFollowed(req.body.prayer.id))
   .then(newFollow => {
     let prayer = req.body.prayer
     res.status(201).send(newFollow)

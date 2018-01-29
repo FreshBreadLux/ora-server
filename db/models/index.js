@@ -6,12 +6,12 @@ const FlagReason = require('./flagreason')
 /** Associations **/
 User.hasMany(Prayer)
 Prayer.belongsTo(User)
-User.belongsToMany(Prayer, { through: 'follow' })
-Prayer.belongsToMany(User, { through: 'follow' })
-User.belongsToMany(Prayer, { through: Flag })
-Prayer.belongsToMany(User, { through: Flag })
-User.belongsToMany(Prayer, { through: 'view' })
-Prayer.belongsToMany(User, { through: 'view' })
+User.belongsToMany(Prayer, { through: 'follow', as: 'followed', foreignKey: 'followedId' })
+Prayer.belongsToMany(User, { through: 'follow', as: 'follower', foreignKey: 'followerId' })
+User.belongsToMany(Prayer, { through: Flag, as: 'flagged', foreignKey: 'flaggedId' })
+Prayer.belongsToMany(User, { through: Flag, as: 'flagger', foreignKey: 'flaggerId' })
+User.belongsToMany(Prayer, { through: 'view', as: 'viewed', foreignKey: 'viewedId' })
+Prayer.belongsToMany(User, { through: 'view', as: 'viewer', foreignKey: 'viewerId' })
 Flag.belongsTo(FlagReason)
 
 module.exports = {
