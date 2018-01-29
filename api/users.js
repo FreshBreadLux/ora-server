@@ -1,7 +1,8 @@
+const db = require('../db')
 const router = require('express').Router()
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
-const Follow = require('../db/models/follow')
+const Follow = db.model('follow')
 const jwt = require('jsonwebtoken')
 const config = require('../config.json')
 

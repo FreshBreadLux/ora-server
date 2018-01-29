@@ -1,8 +1,9 @@
+const db = require('../db')
 const router = require('express').Router()
 const Op = require('sequelize').Op
 const Prayer = require('../db/models/prayer')
 const User = require('../db/models/user')
-const Follow = require('../db/models/follow')
+const Follow = db.model('follow')
 const Expo = require('expo-server-sdk')
 let expo = new Expo()
 
