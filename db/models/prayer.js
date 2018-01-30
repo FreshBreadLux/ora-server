@@ -10,11 +10,6 @@ const Prayer = db.define('prayer', {
     type: Sequelize.TEXT,
     allowNull: false
   },
-  dailyViews: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0,
-    allowNull: false
-  },
   totalViews: {
     type: Sequelize.INTEGER,
     defaultValue: 0,
