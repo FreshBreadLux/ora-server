@@ -25,10 +25,8 @@ router.put('/next', async (req, res, next) => {
     })
     if (!prayer) return res.status(404).send()
     const newView = await prayer.addViewer(req.body.userId)
-    const dailyViews = prayer.dailyViews
     const totalViews = prayer.totalViews
     const updatedPrayer = await prayer.update({
-      dailyViews: dailyViews + 1,
       totalViews: totalViews + 1,
     })
     res.send({newView, updatedPrayer})

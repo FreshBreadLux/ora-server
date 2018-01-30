@@ -25,6 +25,11 @@ const User = db.define('user', {
     type: Sequelize.INTEGER,
     defaultValue: 0,
     allowNull: false
+  },
+  consecutiveDays: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false
   }
 })
 
