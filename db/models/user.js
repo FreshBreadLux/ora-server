@@ -30,6 +30,11 @@ const User = db.define('user', {
     type: Sequelize.INTEGER,
     defaultValue: 0,
     allowNull: false
+  },
+  prayedToday: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
   }
 })
 
