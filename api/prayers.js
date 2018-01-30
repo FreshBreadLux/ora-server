@@ -22,6 +22,7 @@ router.put('/next', (req, res, next) => {
     }]
   })
   .then(prayer => {
+    prayer.addViewer(req.body.userId)
     let dailyViews = prayer.dailyViews
     let totalViews = prayer.totalViews
     return prayer.update({
