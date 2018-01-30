@@ -2,7 +2,6 @@ const db = require('../db')
 const router = require('express').Router()
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
-const Follow = db.model('follow')
 const jwt = require('jsonwebtoken')
 const config = require('../config.json')
 
@@ -33,6 +32,16 @@ router.get('/:userId/follows', (req, res, next) => {
   User.findById(req.params.userId)
   .then(foundUser => foundUser.getFollowed())
   .then(follows => res.send(follows))
+  .catch(console.error)
+})
+
+router.get('/:userId/views', (req, res, next) => {
+  User.findById(req.params.userId)
+  .then(foundUser => foundUser.getViewed())
+  .then(views => {
+    const prayerIdsOfViews = views.map(view => view.id)
+    res.send(prayerIdsOfViews)
+  })
   .catch(console.error)
 })
 

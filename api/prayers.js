@@ -9,52 +9,51 @@ let expo = new Expo()
 
 module.exports = router
 
-router.put('/next', (req, res, next) => {
-  Prayer.findOne({
-    where: {
-      closed: false,
-      userId: { [Op.ne]: req.body.userId }
-    },
-    order: [['dailyViews'], ['totalViews']],
-    include: [{
-      model: User,
-      attributes: ['pushToken', 'id']
-    }]
-  })
-  .then(prayer => {
-    prayer.addViewer(req.body.userId)
-    let dailyViews = prayer.dailyViews
-    let totalViews = prayer.totalViews
-    return prayer.update({
+router.put('/next', async (req, res, next) => {
+  try {
+    const prayer = await Prayer.findOne({
+      where: {
+        closed: false,
+        userId: { [Op.ne]: req.body.userId },
+        id: { [Op.notIn]: req.body.prayerIdsOfViews }
+      },
+      order: [['totalViews']],
+      include: [{
+        model: User,
+        attributes: ['pushToken', 'id']
+      }]
+    })
+    if (!prayer) return res.status(404).send()
+    const newView = await prayer.addViewer(req.body.userId)
+    const dailyViews = prayer.dailyViews
+    const totalViews = prayer.totalViews
+    const updatedPrayer = await prayer.update({
       dailyViews: dailyViews + 1,
       totalViews: totalViews + 1,
     })
-  })
-  .then(prayer => {
-    res.send(prayer)
+    res.send({newView, updatedPrayer})
     if (Expo.isExpoPushToken(prayer.user.pushToken)) {
       return expo.sendPushNotificationAsync({
-        to: prayer.user.pushToken,
+        to: updatedPrayer.user.pushToken,
         sound: 'default',
-        body: `Someone is praying for your intention: ${prayer.subject}`,
-        data: { body: `Someone is praying for your intention: ${prayer.subject}` },
+        body: `Someone is praying for your intention: ${updatedPrayer.subject}`,
+        data: { body: `Someone is praying for your intention: ${updatedPrayer.subject}` },
       })
     } else {
-      console.error(`${prayer.user.pushToken} is not valid`)
+      console.error(`${updatedPrayer.user.pushToken} is not valid`)
     }
-  })
-  .then(() => {
     if (req.body.userId) {
       User.findById(req.body.userId)
       .then(foundUser => {
-        let totalPrayers = foundUser.totalPrayers
+        const totalPrayers = foundUser.totalPrayers
         foundUser.update({
           totalPrayers: totalPrayers + 1
         })
       })
     }
-  })
-  .catch(console.error)
+  } catch (err) {
+    console.error(err)
+  }
 })
 
 router.put('/update/:prayerId', (req, res, next) => {
