@@ -11,7 +11,7 @@ module.exports = router
 router.put('/next', async (req, res, next) => {
   try {
     const prayer =
-    req.body.prayerIdsOfView
+    req.body.userId
     ? await Prayer.findOne({
       where: {
         closed: false,
