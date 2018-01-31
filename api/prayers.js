@@ -10,11 +10,23 @@ module.exports = router
 
 router.put('/next', async (req, res, next) => {
   try {
-    const prayer = await Prayer.findOne({
+    const prayer =
+    req.body.prayerIdsOfView
+    ? await Prayer.findOne({
       where: {
         closed: false,
         userId: { [Op.ne]: req.body.userId },
         id: { [Op.notIn]: req.body.prayerIdsOfViews }
+      },
+      order: [['totalViews']],
+      include: [{
+        model: User,
+        attributes: ['pushToken', 'id']
+      }]
+    })
+    : await Prayer.findOne({
+      where: {
+        closed: false,
       },
       order: [['totalViews']],
       include: [{
