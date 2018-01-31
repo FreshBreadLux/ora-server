@@ -26,16 +26,16 @@ const User = db.define('user', {
     defaultValue: 0,
     allowNull: false
   },
-  consecutiveDays: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0,
-    allowNull: false
-  },
-  prayedToday: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false,
-    allowNull: false
-  }
+  // consecutiveDays: {
+  //   type: Sequelize.INTEGER,
+  //   defaultValue: 0,
+  //   allowNull: false
+  // },
+  // prayedToday: {
+  //   type: Sequelize.BOOLEAN,
+  //   defaultValue: false,
+  //   allowNull: false
+  // }
 })
 
 module.exports = User
