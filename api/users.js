@@ -13,7 +13,14 @@ function createToken(user) {
 
 router.get('/:userId', (req, res, next) => {
   User.findById(req.params.userId)
-  .then(foundUser => res.status(201).send(foundUser))
+  .then(foundUser => {
+    const scrubbedUser = {
+      email: foundUser.email,
+      id: foundUser.id,
+      totalPrayers: foundUser.totalPrayers,
+    }
+    res.status(201).send(scrubbedUser)
+  })
   .catch(console.error)
 })
 
