@@ -16,7 +16,7 @@ router.put('/next', async (req, res, next) => {
       where: {
         closed: false,
         userId: { [Op.ne]: req.body.userId },
-        id: { [Op.notIn]: req.body.prayerIdsOfViews }
+        id: { [Op.notIn]: req.body.views }
       },
       order: [['totalViews']],
       include: [{
