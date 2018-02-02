@@ -60,7 +60,7 @@ router.put('/next', async (req, res, next) => {
         const totalPrayers = foundUser.totalPrayers
         foundUser.update({
           totalPrayers: totalPrayers + 1,
-          // prayedToday: true
+          prayedToday: true
         })
       })
     }
