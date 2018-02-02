@@ -1,4 +1,3 @@
-const db = require('../db')
 const router = require('express').Router()
 const Op = require('sequelize').Op
 const Prayer = require('../db/models/prayer')
@@ -100,5 +99,12 @@ router.put('/close/:prayerId', (req, res, next) => {
 router.post('/', (req, res, next) => {
   Prayer.create(req.body)
   .then(prayer => res.json(prayer))
+  .catch(console.error)
+})
+
+router.delete('/:prayerId', (req, res, next) => {
+  Prayer.findById(req.params.prayerId)
+  .then(prayer => prayer.destroy())
+  .then(() => res.status(201).send('Prayer deleted'))
   .catch(console.error)
 })
