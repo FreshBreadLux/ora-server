@@ -1,6 +1,4 @@
-const db = require('../db')
 const router = require('express').Router()
-const Follow = db.model('follow')
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
 const Expo = require('expo-server-sdk')
@@ -37,18 +35,12 @@ router.post('/', (req, res, next) => {
   .catch(console.error)
 })
 
-router.delete('/:followId', (req, res, next) => {
-  Follow.findById(req.params.followId)
-  .then(follow => {
-    let prayerId = follow.prayerId
-    Prayer.findById(prayerId)
-    .then(foundPrayer => {
-      let totalFollows = foundPrayer.totalFollows
-      foundPrayer.update({
-        totalFollows: totalFollows - 1
-      })
-    })
-    follow.destroy()
+router.delete('/followedId/:followedId/followerId/:followerId', (req, res, next) => {
+  Prayer.findById(req.params.followedId)
+  .then(prayer => {
+    prayer.removeFollower(req.params.followerId)
+    let totalFollows = prayer.totalFollows
+    prayer.update({ totalFollows: totalFollows - 1 })
   })
   .then(() => res.status(201).send('Unfollow successful'))
   .catch(console.error)

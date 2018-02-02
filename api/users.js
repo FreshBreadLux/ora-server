@@ -1,4 +1,3 @@
-const db = require('../db')
 const router = require('express').Router()
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
