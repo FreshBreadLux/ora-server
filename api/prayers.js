@@ -42,7 +42,6 @@ router.put('/next', async (req, res, next) => {
     const updatedPrayer = await prayer.update({
       totalViews: totalViews + 1,
     })
-    res.send({newView, updatedPrayer})
     if (Expo.isExpoPushToken(prayer.user.pushToken)) {
       expo.sendPushNotificationAsync({
         to: updatedPrayer.user.pushToken,
@@ -54,14 +53,20 @@ router.put('/next', async (req, res, next) => {
       console.error(`${updatedPrayer.user.pushToken} is not valid`)
     }
     if (req.body.userId) {
-      User.findById(req.body.userId)
-      .then(foundUser => {
-        const totalPrayers = foundUser.totalPrayers
-        foundUser.update({
-          totalPrayers: totalPrayers + 1,
-          prayedToday: true
-        })
+      const foundUser = await User.findById(req.body.userId)
+      const totalPrayers = foundUser.totalPrayers
+      const updatedUser = await foundUser.update({
+        totalPrayers: totalPrayers + 1,
+        prayedToday: true
       })
+      const scrubbedUser = {
+        email: updatedUser.email,
+        id: updatedUser.id,
+        totalPrayers: updatedUser.totalPrayers,
+      }
+      res.send({newView, updatedPrayer, scrubbedUser})
+    } else {
+      res.send({newView, updatedPrayer})
     }
   } catch (err) {
     console.error(err)

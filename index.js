@@ -75,10 +75,6 @@ const createApp = () => {
 const startListening = () => {
   // start listening (and create a 'server' object representing our server)
   const server = app.listen(PORT, () => console.log(`Connecting prayers on port ${PORT}`))
-
-  // set up the socket control center
-  const io = socketio(server)
-  require('./socketio')(io)
 }
 
 const syncDb = () => db.sync()
