@@ -44,7 +44,7 @@ router.put('/next', async (req, res, next) => {
     })
     res.send({newView, updatedPrayer})
     if (Expo.isExpoPushToken(prayer.user.pushToken)) {
-      return expo.sendPushNotificationAsync({
+      expo.sendPushNotificationAsync({
         to: updatedPrayer.user.pushToken,
         sound: 'default',
         body: `Someone is praying for your intention: ${updatedPrayer.subject}`,
