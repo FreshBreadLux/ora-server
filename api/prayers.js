@@ -47,7 +47,7 @@ router.put('/next', async (req, res, next) => {
         to: updatedPrayer.user.pushToken,
         sound: 'default',
         body: `Someone is praying for your intention: ${updatedPrayer.subject}`,
-        data: { body: `Someone is praying for your intention: ${updatedPrayer.subject}` },
+        data: { type: 'new-view' },
       })
     } else {
       console.error(`${updatedPrayer.user.pushToken} is not valid`)
@@ -84,7 +84,7 @@ router.put('/update/:prayerId', (req, res, next) => {
         to: user.pushToken,
         sound: 'default',
         body: `A prayer you are following was updated: ${updatedPrayer.subject}`,
-        data: { ora: 'pro nobis' }
+        data: { type: 'follow-update' }
       }))
     })
     .then(messages => {
