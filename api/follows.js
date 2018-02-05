@@ -17,7 +17,10 @@ router.post('/', (req, res, next) => {
         to: prayer.user.pushToken,
         sound: 'default',
         body: `Someone started following your prayer: ${prayer.subject}`,
-        data: { type: 'new-follow' },
+        data: {
+          type: 'new-follow',
+          body: `Someone started following your prayer: ${prayer.subject}`
+        },
       })
     } else {
       console.error(`${prayer.user.pushToken} is not valid`)
