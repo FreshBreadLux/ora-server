@@ -8,9 +8,9 @@ module.exports = router
 
 router.post('/', (req, res, next) => {
   User.findById(req.body.userId)
-  .then(foundUser => foundUser.addFollowed(req.body.prayer.id))
+  .then(foundUser => foundUser.addFollowed(req.body.currentPrayer.id))
   .then(newFollow => {
-    let prayer = req.body.prayer
+    let prayer = req.body.currentPrayer
     res.status(201).send(newFollow)
     if (Expo.isExpoPushToken(prayer.user.pushToken)) {
       return expo.sendPushNotificationAsync({

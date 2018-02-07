@@ -36,7 +36,7 @@ router.get('/:userId/prayers', (req, res, next) => {
 
 router.get('/:userId/follows', (req, res, next) => {
   User.findById(req.params.userId)
-  .then(foundUser => foundUser.getFollowed())
+  .then(foundUser => foundUser.getFollowed({order: [['createdAt', 'DESC']]}))
   .then(follows => res.send(follows))
   .catch(console.error)
 })
