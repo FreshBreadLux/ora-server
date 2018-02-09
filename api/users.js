@@ -7,7 +7,7 @@ const config = require('../config.json')
 module.exports = router
 
 function createToken(user) {
-  return jwt.sign({email: user.email}, config.secret)
+  return jwt.sign({id: user.id}, config.secret)
 }
 
 router.get('/:userId', (req, res, next) => {

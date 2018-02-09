@@ -122,8 +122,20 @@ router.post('/', (req, res, next) => {
 })
 
 router.delete('/:prayerId', (req, res, next) => {
-  Prayer.findById(req.params.prayerId)
-  .then(prayer => prayer.destroy())
-  .then(() => res.status(201).send('Prayer deleted'))
-  .catch(console.error)
+  try {
+    const verify = jwt.verify(req.headers.token, config.secret)
+    Prayer.findById(req.params.prayerId)
+    .then(prayer => {
+      if (verify.id === prayer.userId) {
+        prayer.destroy()
+      } else {
+        throw new Error('Token ID and user ID do not match')
+      }
+    })
+    .then(() => res.status(201).send('Prayer deleted'))
+    .catch(console.error)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
 })
