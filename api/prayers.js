@@ -4,6 +4,8 @@ const Prayer = require('../db/models/prayer')
 const User = require('../db/models/user')
 const Expo = require('expo-server-sdk')
 let expo = new Expo()
+const jwt = require('jsonwebtoken')
+const config = require('../config.json')
 
 module.exports = router
 
@@ -108,9 +110,19 @@ router.put('/close/:prayerId', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-  Prayer.create(req.body)
-  .then(prayer => res.json(prayer))
-  .catch(console.error)
+  try {
+    jwt.verify(req.body.jwToken, config.secret)
+    Prayer.create({
+      userId: req.body.userId,
+      subject: req.body.subject,
+      body: req.body.body,
+    })
+    .then(prayer => res.json(prayer))
+    .catch(console.error)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
 })
 
 router.delete('/:prayerId', (req, res, next) => {
