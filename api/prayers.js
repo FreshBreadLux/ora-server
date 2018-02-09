@@ -111,12 +111,8 @@ router.put('/close/:prayerId', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
   try {
-    jwt.verify(req.body.jwToken, config.secret)
-    Prayer.create({
-      userId: req.body.userId,
-      subject: req.body.subject,
-      body: req.body.body,
-    })
+    jwt.verify(req.headers.token, config.secret)
+    Prayer.create(req.body)
     .then(prayer => res.json(prayer))
     .catch(console.error)
   } catch (error) {
