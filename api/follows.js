@@ -27,7 +27,7 @@ router.post('/', (req, res, next) => {
     }
   })
   .then(() => {
-    Prayer.findById(req.body.prayer.id)
+    Prayer.findById(req.body.currentPrayer.id)
     .then(followedPrayer => {
       let totalFollows = followedPrayer.totalFollows
       followedPrayer.update({
