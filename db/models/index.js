@@ -2,6 +2,7 @@ const User = require('./user')
 const Prayer = require('./prayer')
 const Flag = require('./flag')
 const FlagReason = require('./flagreason')
+const Update = require('./update')
 
 /** Associations **/
 User.hasMany(Prayer)
@@ -13,10 +14,13 @@ Prayer.belongsToMany(User, { through: Flag, as: 'flagger', foreignKey: 'flaggedI
 User.belongsToMany(Prayer, { through: 'view', as: 'viewed', foreignKey: 'viewerId' })
 Prayer.belongsToMany(User, { through: 'view', as: 'viewer', foreignKey: 'viewedId' })
 Flag.belongsTo(FlagReason)
+Prayer.hasMany(Update)
+Update.belongsTo(Prayer)
 
 module.exports = {
   User,
   Prayer,
   Flag,
-  FlagReason
+  FlagReason,
+  Update
 }
