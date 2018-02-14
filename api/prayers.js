@@ -2,6 +2,7 @@ const router = require('express').Router()
 const Op = require('sequelize').Op
 const Prayer = require('../db/models/prayer')
 const User = require('../db/models/user')
+const Update = require('../db/models/update')
 const Expo = require('expo-server-sdk')
 let expo = new Expo()
 const jwt = require('jsonwebtoken')
@@ -23,6 +24,8 @@ router.put('/next', async (req, res, next) => {
       include: [{
         model: User,
         attributes: ['pushToken', 'id']
+      }, {
+        model: Update
       }]
     })
     : await Prayer.findOne({
@@ -78,7 +81,7 @@ router.put('/next', async (req, res, next) => {
   }
 })
 
-router.put('/update/:prayerId', (req, res, next) => {
+router.put('/edit/:prayerId', (req, res, next) => {
   Prayer.findById(req.params.prayerId)
   .then(foundPrayer => foundPrayer.update(req.body))
   .then(updatedPrayer => {

@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
+const Update = require('../db/models/update')
 const jwt = require('jsonwebtoken')
 const config = require('../config.json')
 
@@ -28,6 +29,7 @@ router.get('/:userId/prayers', (req, res, next) => {
     where: {
       userId: req.params.userId
     },
+    include: [Update],
     order: [['createdAt', 'DESC']]
   })
   .then(prayers => res.status(201).send(prayers))
@@ -36,7 +38,10 @@ router.get('/:userId/prayers', (req, res, next) => {
 
 router.get('/:userId/follows', (req, res, next) => {
   User.findById(req.params.userId)
-  .then(foundUser => foundUser.getFollowed({order: [['createdAt', 'DESC']]}))
+  .then(foundUser => foundUser.getFollowed({
+    include: [Update],
+    order: [['createdAt', 'DESC']]
+  }))
   .then(follows => res.send(follows))
   .catch(console.error)
 })
