@@ -1,5 +1,5 @@
 const db = require('./db')
-const { User, Prayer } = require('./db/models')
+const { User, Prayer, FlagReason } = require('./db/models')
 
 async function seed () {
   await db.sync({force: true})
@@ -8,6 +8,12 @@ async function seed () {
   const users = await Promise.all([
     User.create({email: 'cody@email.com', password: '123'}),
     User.create({email: 'murphy@email.com', password: '123'})
+  ])
+
+  const flagReasons = await Promise.all([
+    FlagReason.create({flagCategory: 'Spam'}),
+    FlagReason.create({flagCategory: 'Dangerous'}),
+    FlagReason.create({flagCategory: 'Inappropriate'})
   ])
 
   const prayers = await Promise.all([
@@ -62,7 +68,7 @@ async function seed () {
     }),
   ])
 
-  console.log(`seeded ${users.length} users and ${prayers.length} prayers`)
+  console.log(`seeded ${users.length} users, ${prayers.length} prayers, and ${flagReasons.length} flagReasons`)
   console.log(`seeded successfully`)
 }
 
