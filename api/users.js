@@ -43,7 +43,10 @@ router.get('/:userId/follows', (req, res, next) => {
   User.findById(req.params.userId)
   .then(foundUser => foundUser.getFollowed({
     include: [Update],
-    order: [['createdAt', 'DESC']]
+    order: [
+      ['createdAt', 'DESC'],
+      [{model: Update}, 'createdAt']
+    ]
   }))
   .then(follows => res.send(follows))
   .catch(console.error)

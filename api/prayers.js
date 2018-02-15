@@ -20,23 +20,31 @@ router.put('/next', async (req, res, next) => {
         userId: { [Op.ne]: req.body.userId },
         id: { [Op.notIn]: req.body.views }
       },
-      order: [['totalViews']],
       include: [{
         model: User,
         attributes: ['pushToken', 'id']
       }, {
         model: Update
-      }]
+      }],
+      order: [
+        ['totalViews'],
+        [{model: Update}, 'createdAt']
+      ]
     })
     : await Prayer.findOne({
       where: {
         closed: false,
       },
-      order: [['totalViews']],
       include: [{
         model: User,
         attributes: ['pushToken', 'id']
-      }]
+      }, {
+        model: Update
+      }],
+      order: [
+        ['totalViews'],
+        [{model: Update}, 'createdAt']
+      ]
     })
     if (!prayer) return res.status(404).send()
     const newView =
