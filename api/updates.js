@@ -9,7 +9,25 @@ module.exports = router
 
 router.post('/', (req, res, next) => {
   Update.create(req.body)
-  .then(newUpdate => res.send(newUpdate))
+  .then(newUpdate => {
+    return newUpdate.getPrayer()
+  })
+  .then(updatedPrayer => {
+    updatedPrayer.getFollower()
+    .then(arrOfFollowers => {
+      return arrOfFollowers.map(user => ({
+        to: user.pushToken,
+        sound: 'default',
+        body: `A prayer you are following was updated: ${updatedPrayer.subject}`,
+        data: {
+          type: 'follow-update',
+          body: `A prayer you are following was updated: ${updatedPrayer.subject}`
+        }
+      }))
+    })
+    .then(messages => expo.sendPushNotificationsAsync(messages))
+  })
+  .then(() => res.status(200).send('Prayer successfully updated'))
   .catch(console.error)
 })
 

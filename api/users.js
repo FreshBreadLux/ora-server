@@ -29,8 +29,11 @@ router.get('/:userId/prayers', (req, res, next) => {
     where: {
       userId: req.params.userId
     },
-    include: [Update],
-    order: [['createdAt', 'DESC']]
+    include: [{ model: Update }],
+    order: [
+      ['createdAt', 'DESC'],
+      [{model: Update}, 'createdAt']
+    ]
   })
   .then(prayers => res.status(201).send(prayers))
   .catch(console.error)

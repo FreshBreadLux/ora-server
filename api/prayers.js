@@ -84,24 +84,7 @@ router.put('/next', async (req, res, next) => {
 router.put('/edit/:prayerId', (req, res, next) => {
   Prayer.findById(req.params.prayerId)
   .then(foundPrayer => foundPrayer.update(req.body))
-  .then(updatedPrayer => {
-    res.status(201).send(updatedPrayer)
-    updatedPrayer.getFollower()
-    .then(arrOfFollowers => {
-      return arrOfFollowers.map(user => ({
-        to: user.pushToken,
-        sound: 'default',
-        body: `A prayer you are following was updated: ${updatedPrayer.subject}`,
-        data: {
-          type: 'follow-update',
-          body: `A prayer you are following was updated: ${updatedPrayer.subject}`
-        }
-      }))
-    })
-    .then(messages => {
-      return expo.sendPushNotificationsAsync(messages)
-    })
-  })
+  .then(updatedPrayer => res.status(201).send(updatedPrayer))
   .catch(console.error)
 })
 
