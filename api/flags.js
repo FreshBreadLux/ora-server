@@ -13,9 +13,19 @@ const smtpTransport = nodemailer.createTransport('SMTP', {
   }
 })
 
+const mailOptions = {
+  from: NODEMAILER_USER,
+  to: NODEMAILER_USER,
+  subject: 'New Flag in Ora',
+  text: 'Someone has flagged a prayer in the Ora prayer network. Check the database for details and take appropriate action.'
+}
+
 router.post('/', (req, res, next) => {
-  console.log('Blah')
   Flag.create(req.body)
   .then(newFlag => res.status(201).send(newFlag))
+  .then(() => smtpTransport.sendMail(mailOptions, (err, resp) => {
+    if (err) console.error(err)
+    else console.log('Flag email sent: ', resp.message)
+  }))
   .catch(console.error)
 })
