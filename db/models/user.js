@@ -35,6 +35,11 @@ const User = db.define('user', {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
     allowNull: false
+  },
+  theme: {
+    type: Sequelize.STRING,
+    defaultValue: 'Rome',
+    allowNull: false
   }
 })
 

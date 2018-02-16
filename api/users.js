@@ -18,9 +18,17 @@ router.get('/:userId', (req, res, next) => {
       email: foundUser.email,
       id: foundUser.id,
       totalPrayers: foundUser.totalPrayers,
+      theme: foundUser.theme
     }
     res.status(201).send(scrubbedUser)
   })
+  .catch(console.error)
+})
+
+router.put('/:userId', (req, res, next) => {
+  User.findById(req.params.userId)
+  .then(foundUser => foundUser.update(req.body))
+  .then(updatedUser => res.send(updatedUser))
   .catch(console.error)
 })
 
