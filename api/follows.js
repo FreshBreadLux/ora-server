@@ -48,3 +48,29 @@ router.delete('/followedId/:followedId/followerId/:followerId', (req, res, next)
   .then(() => res.status(201).send('Unfollow successful'))
   .catch(console.error)
 })
+
+router.put('/notify/followedId/:followedId', async (req, res, next) => {
+  try {
+    const prayer = await Prayer.findOne({
+      where: { id: req.params.followedId },
+      include: [{model: User}]
+    })
+    if (Expo.isExpoPushToken(prayer.user.pushToken)) {
+      await expo.sendPushNotificationAsync({
+        to: prayer.user.pushToken,
+        sound: 'default',
+        body: `A follower is praying for your intention: ${prayer.subject}`,
+        data: {
+          type: 'follower-prayer',
+          body: `A follower is praying for your intention: ${prayer.subject}`
+        },
+      })
+      res.status(201).send(prayer)
+    } else {
+      console.error(`${prayer.user.pushToken} is not valid`)
+      res.status(201).send(prayer)
+    }
+  } catch (err) {
+    console.error(err)
+  }
+})

@@ -10,11 +10,80 @@ const config = require('../config.json')
 
 module.exports = router
 
+const notificationQueues = {}
+
+// THE FUNCTION REGISTERNOTIFICATION HANDLES NOTIFICATION BATCHING
+async function registerNotification(updatedPrayer) {
+  const ONE_HOUR = 1000 * 60 * 2
+  const prayerId = updatedPrayer.id
+  if (notificationQueues[prayerId] && notificationQueues[prayerId].sentOne === true) {
+    // IF A USER HAS RECENTLY RECEIVED ONE NOTIFICATION, CANCEL THE RESET AND
+    // QUEUE ANOTHER TO BE SENT IN AN HOUR
+    clearTimeout(notificationQueues[prayerId].cancelReset)
+    notificationQueues[prayerId] = {
+      number: 1,
+      sentOne: false,
+      cancel: null,
+      pushNotification: {
+        to: updatedPrayer.user.pushToken,
+        sound: 'default',
+        body: `Someone is praying for your intention: ${updatedPrayer.subject}`,
+        data: {
+          type: 'new-view',
+          body: `Someone is praying for your intention: ${updatedPrayer.subject}`
+        },
+      }
+    }
+    const cancellationToken = setTimeout(async () => {
+      await expo.sendPushNotificationAsync(notificationQueues[prayerId].pushNotification)
+      notificationQueues[prayerId] = null
+    }, ONE_HOUR)
+    notificationQueues[prayerId].cancelNotification = cancellationToken
+  } else if (notificationQueues[prayerId]) {
+    // IF THERE IS ALREADY A QUEUE OF NOTIFICATIONS, COMBINE THEM AND SET A
+    // NEW TIMER FOR THEM TO BE SENT
+    clearTimeout(notificationQueues[prayerId].cancelNotification)
+    notificationQueues[prayerId] = {
+      ...notificationQueues[prayerId],
+      number: notificationQueues[prayerId].number + 1,
+      pushNotification: {
+        to: updatedPrayer.user.pushToken,
+        sound: 'default',
+        body: `${notificationQueues[prayerId].number + 1} people are praying for your intention: ${updatedPrayer.subject}`,
+        data: {
+          type: 'new-view',
+          body: `${notificationQueues[prayerId].number + 1} people are praying for your intention: ${updatedPrayer.subject}`
+        },
+      }
+    }
+    const cancellationToken = setTimeout(async () => {
+      await expo.sendPushNotificationAsync(notificationQueues[prayerId].pushNotification)
+      notificationQueues[prayerId] = null
+    }, ONE_HOUR)
+    notificationQueues[prayerId].cancelNotification = cancellationToken
+  } else {
+    // IF THIS IS THE FIRST NOTIFICATION IN AN HOUR, SEND IT, SET THE STATUS,
+    // AND SET A TIMER TO RESET THE STATUS
+    await expo.sendPushNotificationAsync({
+      to: updatedPrayer.user.pushToken,
+      sound: 'default',
+      body: `Someone is praying for your intention: ${updatedPrayer.subject}`,
+      data: {
+        type: 'new-view',
+        body: `Someone is praying for your intention: ${updatedPrayer.subject}`
+      }
+    })
+    notificationQueues[prayerId] = { sentOne: true }
+    const cancellationToken = setTimeout(() => {
+      notificationQueues[prayerId] = null
+    }, ONE_HOUR)
+    notificationQueues[prayerId].cancelReset = cancellationToken
+  }
+}
+
 router.put('/next', async (req, res, next) => {
   try {
-    const prayer =
-    req.body.userId
-    ? await Prayer.findOne({
+    const prayer = await Prayer.findOne({
       where: {
         closed: false,
         userId: { [Op.ne]: req.body.userId },
@@ -31,59 +100,30 @@ router.put('/next', async (req, res, next) => {
         [{model: Update}, 'createdAt']
       ]
     })
-    : await Prayer.findOne({
-      where: {
-        closed: false,
-      },
-      include: [{
-        model: User,
-        attributes: ['pushToken', 'id']
-      }, {
-        model: Update
-      }],
-      order: [
-        ['totalViews'],
-        [{model: Update}, 'createdAt']
-      ]
-    })
     if (!prayer) return res.status(404).send()
-    const newView =
-    req.body.userId
-    ? await prayer.addViewer(req.body.userId)
-    : null
+    const newView = await prayer.addViewer(req.body.userId)
     const totalViews = prayer.totalViews
     const updatedPrayer = await prayer.update({
       totalViews: totalViews + 1,
     })
     if (Expo.isExpoPushToken(prayer.user.pushToken)) {
-      expo.sendPushNotificationAsync({
-        to: updatedPrayer.user.pushToken,
-        sound: 'default',
-        body: `Someone is praying for your intention: ${updatedPrayer.subject}`,
-        data: {
-          type: 'new-view',
-          body: `Someone is praying for your intention: ${updatedPrayer.subject}`
-        },
-      })
+      registerNotification(updatedPrayer)
     } else {
       console.error(`${updatedPrayer.user.pushToken} is not valid`)
     }
-    if (req.body.userId) {
-      const foundUser = await User.findById(req.body.userId)
-      const totalPrayers = foundUser.totalPrayers
-      const updatedUser = await foundUser.update({
-        totalPrayers: totalPrayers + 1,
-        prayedToday: true
-      })
-      const scrubbedUser = {
-        email: updatedUser.email,
-        id: updatedUser.id,
-        totalPrayers: updatedUser.totalPrayers,
-      }
-      res.send({newView, updatedPrayer, scrubbedUser})
-    } else {
-      res.send({newView, updatedPrayer})
+    const foundUser = await User.findById(req.body.userId)
+    const totalPrayers = foundUser.totalPrayers
+    const updatedUser = await foundUser.update({
+      totalPrayers: totalPrayers + 1,
+      prayedToday: true
+    })
+    const scrubbedUser = {
+      email: updatedUser.email,
+      id: updatedUser.id,
+      totalPrayers: updatedUser.totalPrayers,
+      theme: updatedUser.theme
     }
+    res.send({newView, updatedPrayer, scrubbedUser})
   } catch (err) {
     console.error(err)
   }
