@@ -6,8 +6,8 @@ async function seed () {
   console.log('db synced!')
 
   const users = await Promise.all([
-    User.create({email: 'cody@email.com', password: '123'}),
-    User.create({email: 'murphy@email.com', password: '123'})
+    User.create({email: 'cody@email.com', password: '123', isAdmin: true}),
+    User.create({email: 'murphy@email.com', password: '123', isAdmin: true})
   ])
 
   const flagReasons = await Promise.all([
@@ -23,7 +23,6 @@ async function seed () {
       views: 0,
       closed: false,
       userId: 1,
-      isAdmin: true,
     }),
     Prayer.create({
       subject: 'Feeling Grateful',
@@ -31,7 +30,6 @@ async function seed () {
       views: 0,
       closed: false,
       userId: 2,
-      isAdmin: true,
     }),
   ])
 
