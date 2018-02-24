@@ -43,6 +43,10 @@ const User = db.define('user', {
   },
   resetCode: {
     type: Sequelize.STRING
+  },
+  isAdmin: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
   }
 })
 
