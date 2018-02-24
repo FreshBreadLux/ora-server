@@ -36,6 +36,7 @@ router.get('/:userId', (req, res, next) => {
       id: foundUser.id,
       totalPrayers: foundUser.totalPrayers,
       theme: foundUser.theme,
+      consecutiveDays: foundUser.consecutiveDays,
       isAdmin: foundUser.isAdmin
     }
     res.status(201).send(scrubbedUser)
