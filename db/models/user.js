@@ -40,6 +40,9 @@ const User = db.define('user', {
     type: Sequelize.STRING,
     defaultValue: 'Rome',
     allowNull: false
+  },
+  resetCode: {
+    type: Sequelize.STRING
   }
 })
 

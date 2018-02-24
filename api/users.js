@@ -4,11 +4,30 @@ const Prayer = require('../db/models/prayer')
 const Update = require('../db/models/update')
 const jwt = require('jsonwebtoken')
 const config = require('../config.json')
+const nodemailer = require('nodemailer')
+const { NODEMAILER_USER, NODEMAILER_PASS } = require('../secrets')
 
 module.exports = router
 
+const smtpTransport = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: NODEMAILER_USER,
+    pass: NODEMAILER_PASS
+  }
+})
+
 function createToken(user) {
   return jwt.sign({id: user.id}, config.secret)
+}
+
+function generateResetCode() {
+  let resetCode = ''
+  const numbers = '0123456789'
+  for (let i = 0; i < 6; i++) {
+    resetCode += numbers.charAt(Math.floor(Math.random() * numbers.length))
+  }
+  return resetCode
 }
 
 router.get('/:userId', (req, res, next) => {
@@ -23,6 +42,41 @@ router.get('/:userId', (req, res, next) => {
     res.status(201).send(scrubbedUser)
   })
   .catch(console.error)
+})
+
+router.put('/sendResetCode', async (req, res, next) => {
+  if (!req.body.email) res.status(400).send('You must send an email')
+  const foundUser = await User.findOne({where: {email: req.body.email}})
+  if (!foundUser) {
+    res.status(401).send('That email is incorrect')
+  } else {
+    const resetCode = generateResetCode()
+    const updatedUser = await foundUser.update({resetCode})
+    await smtpTransport.sendMail({
+      from: NODEMAILER_USER,
+      to: updatedUser.email,
+      subject: 'Reset Your Password for Ora',
+      text: `Use code ${resetCode} to reset your password in Ora. This code will expire after one hour.`
+    }, (err, info) => {
+      if (err) console.error(err)
+      else console.log(`Reset code sent to ${updatedUser.email}; info: `, info)
+    })
+    res.send('Reset code successfully sent')
+  }
+})
+
+router.put('/resetPassword', async (req, res, next) => {
+  if (!req.body.resetCode || !req.body.password) res.status(400).send('You must send a reset code and password')
+  const foundUser = await User.findOne({where: {resetCode: req.body.resetCode}})
+  if (!foundUser) {
+    res.status(401).send('That reset code is incorrect')
+  } else {
+    await foundUser.update({
+      resetCode: null,
+      password: req.body.password
+    })
+    res.send('Password successfully reset')
+  }
 })
 
 router.put('/:userId', (req, res, next) => {
