@@ -23,6 +23,7 @@ async function seed () {
       views: 0,
       closed: false,
       userId: 1,
+      isAdmin: true,
     }),
     Prayer.create({
       subject: 'Feeling Grateful',
@@ -30,6 +31,7 @@ async function seed () {
       views: 0,
       closed: false,
       userId: 2,
+      isAdmin: true,
     }),
   ])
 
