@@ -3,22 +3,20 @@ const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
 const Update = require('../db/models/update')
 const jwt = require('jsonwebtoken')
-const config = require('../config.json')
 const nodemailer = require('nodemailer')
-const { NODEMAILER_USER, NODEMAILER_PASS } = require('../secrets')
 
 module.exports = router
 
 const smtpTransport = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: NODEMAILER_USER,
-    pass: NODEMAILER_PASS
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASS
   }
 })
 
 function createToken(user) {
-  return jwt.sign({id: user.id}, config.secret)
+  return jwt.sign({id: user.id}, process.env.SECRET)
 }
 
 function generateResetCode() {
@@ -54,7 +52,7 @@ router.put('/sendResetCode', async (req, res, next) => {
     const resetCode = generateResetCode()
     const updatedUser = await foundUser.update({resetCode})
     await smtpTransport.sendMail({
-      from: NODEMAILER_USER,
+      from: process.env.NODEMAILER_USER,
       to: updatedUser.email,
       subject: 'Reset Your Password for Ora',
       text: `Use code ${resetCode} to reset your password in Ora. This code will expire after one hour.`

@@ -6,7 +6,6 @@ const Update = require('../db/models/update')
 const Expo = require('expo-server-sdk')
 let expo = new Expo()
 const jwt = require('jsonwebtoken')
-const config = require('../config.json')
 
 module.exports = router
 
@@ -145,7 +144,7 @@ router.put('/close/:prayerId', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
   try {
-    jwt.verify(req.headers.token, config.secret)
+    jwt.verify(req.headers.token, process.env.SECRET)
     Prayer.create(req.body)
     .then(prayer => res.json(prayer))
     .catch(console.error)
@@ -157,7 +156,7 @@ router.post('/', (req, res, next) => {
 
 router.delete('/:prayerId', (req, res, next) => {
   try {
-    const verify = jwt.verify(req.headers.token, config.secret)
+    const verify = jwt.verify(req.headers.token, process.env.SECRET)
     Prayer.findById(req.params.prayerId)
     .then(prayer => {
       if (verify.id === prayer.userId) {

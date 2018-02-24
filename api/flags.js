@@ -1,15 +1,14 @@
 const router = require('express').Router()
 const Flag = require('../db/models/flag')
 const nodemailer = require('nodemailer')
-const { NODEMAILER_USER, NODEMAILER_PASS } = require('../secrets')
 
 module.exports = router
 
 const smtpTransport = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: NODEMAILER_USER,
-    pass: NODEMAILER_PASS
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASS
   }
 })
 
@@ -18,8 +17,8 @@ router.post('/', (req, res, next) => {
   .then(newFlag => {
     res.status(201).send(newFlag)
     smtpTransport.sendMail({
-      from: NODEMAILER_USER,
-      to: NODEMAILER_USER,
+      from: process.env.NODEMAILER_USER,
+      to: process.env.NODEMAILER_USER,
       subject: 'New Flag in Ora',
       text: `User ${newFlag.flaggerId} just flagged prayer ${newFlag.flaggedId}. Check the data base for more details, and take appropriate action.`
     }, (err, info) => {
