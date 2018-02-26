@@ -136,7 +136,10 @@ router.post('/', (req, res, next) => {
     })
   })
   .catch(error => {
-    console.error('error.errors[0]: ', error.errors[0])
+    if (error.erros[0].message === 'Validation isEmail on email failed') {
+      return res.status(405).send()
+    }
+    console.error('error.errors[0].message: ', error.errors[0].message)
     res.status(401).send('That email already exists in our database')
   })
 })
