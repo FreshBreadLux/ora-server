@@ -136,7 +136,7 @@ router.post('/', (req, res, next) => {
     })
   })
   .catch(error => {
-    console.error(error)
+    console.error(error.SequelizeValidationError)
     res.status(401).send('That email already exists in our database')
   })
 })
