@@ -139,8 +139,10 @@ router.post('/', (req, res, next) => {
     if (error.errors[0].message === 'Validation isEmail on email failed') {
       return res.status(405).send()
     }
+    if (error.errors[0].message === 'email must be unique') {
+      return res.status(406).send()
+    }
     console.error('error.errors[0].message: ', error.errors[0].message)
-    res.status(401).send('That email already exists in our database')
   })
 })
 
