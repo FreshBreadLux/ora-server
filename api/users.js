@@ -136,7 +136,7 @@ router.post('/', (req, res, next) => {
     })
   })
   .catch(error => {
-    if (error.erros[0].message === 'Validation isEmail on email failed') {
+    if (error.errors[0].message === 'Validation isEmail on email failed') {
       return res.status(405).send()
     }
     console.error('error.errors[0].message: ', error.errors[0].message)
