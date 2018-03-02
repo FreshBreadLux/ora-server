@@ -120,7 +120,9 @@ router.put('/next', async (req, res, next) => {
       email: updatedUser.email,
       id: updatedUser.id,
       totalPrayers: updatedUser.totalPrayers,
-      theme: updatedUser.theme
+      theme: updatedUser.theme,
+      consecutiveDays: updatedUser.consecutiveDays,
+      isAdmin: updatedUser.isAdmin
     }
     res.send({newView, updatedPrayer, scrubbedUser})
   } catch (err) {
