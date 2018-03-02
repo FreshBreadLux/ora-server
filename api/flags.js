@@ -5,7 +5,8 @@ const nodemailer = require('nodemailer')
 module.exports = router
 
 const smtpTransport = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp-relay.sendinblue.com',
+  port: 587,
   auth: {
     user: process.env.NODEMAILER_USER,
     pass: process.env.NODEMAILER_PASS
