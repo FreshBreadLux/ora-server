@@ -47,6 +47,22 @@ const User = db.define('user', {
   isAdmin: {
     type: Sequelize.BOOLEAN,
     defaultValue: false
+  },
+  // Unused as of version 1.0.1; may be used in later versions
+  name: {
+    type: Sequelize.STRING
+  },
+  age: {
+    type: Sequelize.INTEGER
+  },
+  gender: {
+    type: Sequelize.ENUM('Male', 'Female')
+  },
+  stripeOneTimeToken: {
+    type: Sequelize.STRING
+  },
+  stripeCustomerId: {
+    type: Sequelize.STRING
   }
 })
 
