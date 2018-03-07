@@ -30,12 +30,12 @@ const Prayer = db.define('prayer', {
     allowNull: false
   },
   // Unused as of version 1.0.1; may be used in later versions
-  newViews: {
+  unseenViews: {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0
   },
-  newFollows: {
+  unseenFollows: {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0
