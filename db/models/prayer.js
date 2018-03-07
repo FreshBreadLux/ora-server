@@ -28,6 +28,17 @@ const Prayer = db.define('prayer', {
   userId: {
     type: Sequelize.INTEGER,
     allowNull: false
+  },
+  // Unused as of version 1.0.1; may be used in later versions
+  newViews: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+  newFollows: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
   }
 })
 
