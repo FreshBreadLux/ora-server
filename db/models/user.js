@@ -63,6 +63,10 @@ const User = db.define('user', {
   },
   stripeCustomerId: {
     type: Sequelize.STRING
+  },
+  unseenLevelUp: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
   }
 })
 
