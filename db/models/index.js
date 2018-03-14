@@ -34,10 +34,10 @@ Prayer.belongsToMany(User, { through: Share, as: 'sharedWith', foreignKey: 'shar
 Prayer.belongsToMany(Group, { through: 'groupPrayer', as: 'group', foreignKey: 'prayerId' })
 Group.belongsToMany(Prayer, { through: 'groupPrayer', as: 'prayer', foreignKey: 'groupId'})
 // Users forming groups
-User.belongsToMany(Group, { through: 'groupLeadership', as: 'group', foreignKey: 'leaderId'})
+User.belongsToMany(Group, { through: 'groupLeadership', as: 'leaderGroup', foreignKey: 'leaderId'})
 Group.belongsToMany(User, { through: 'groupLeadership', as: 'leader', foreignKey: 'groupId'})
 // Users joining groups
-User.belongsToMany(Group, { through: 'groupMembership', as: 'group', foreignKey: 'memberId'})
+User.belongsToMany(Group, { through: 'groupMembership', as: 'memberGroup', foreignKey: 'memberId'})
 Group.belongsToMany(User, { through: 'groupMembership', as: 'member', foreignKey: 'groupId'})
 
 module.exports = {
