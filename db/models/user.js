@@ -52,6 +52,9 @@ const User = db.define('user', {
   name: {
     type: Sequelize.STRING
   },
+  phoneNumber: {
+    type: Sequelize.INTEGER
+  },
   age: {
     type: Sequelize.INTEGER
   },
