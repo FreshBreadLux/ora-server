@@ -43,6 +43,13 @@ const createApp = () => {
   // compression middleware
   app.use(compression())
 
+  // CORS to allow website to access the API
+  app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    next()
+  })
+
   // api route
   app.use('/api', require('./api'))
   app.get('/', (req, res, next) => {
