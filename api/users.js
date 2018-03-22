@@ -29,6 +29,15 @@ function generateResetCode() {
   return resetCode
 }
 
+router.get('/byEmail/:useremail', (req, res, next) => {
+  User.findOne({ where: { email: req.params.useremail }})
+  .then(foundUser => {
+    if (foundUser) res.send(foundUser)
+    else res.send({user: 'email does not exist'})
+  })
+  .catch(console.error)
+})
+
 router.get('/:userId', (req, res, next) => {
   User.findById(req.params.userId)
   .then(foundUser => {
@@ -41,15 +50,6 @@ router.get('/:userId', (req, res, next) => {
       isAdmin: foundUser.isAdmin
     }
     res.status(201).send(scrubbedUser)
-  })
-  .catch(console.error)
-})
-
-router.get('/byEmail/:useremail', (req, res, next) => {
-  User.findOne({ where: { email: req.params.useremail }})
-  .then(foundUser => {
-    if (foundUser) res.send(foundUser)
-    else res.send({user: 'email does not exist'})
   })
   .catch(console.error)
 })
