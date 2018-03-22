@@ -49,7 +49,22 @@ const User = db.define('user', {
     defaultValue: false
   },
   // Unused as of version 1.0.1; may be used in later versions
-  name: {
+  firstName: {
+    type: Sequelize.STRING
+  },
+  lastName: {
+    type: Sequelize.STRING
+  },
+  address: {
+    type: Sequelize.STRING
+  },
+  city: {
+    type: Sequelize.STRING
+  },
+  state: {
+    type: Sequelize.STRING
+  },
+  zip: {
     type: Sequelize.STRING
   },
   phoneNumber: {
