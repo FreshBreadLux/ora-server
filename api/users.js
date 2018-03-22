@@ -45,6 +45,15 @@ router.get('/:userId', (req, res, next) => {
   .catch(console.error)
 })
 
+router.get('/byEmail/:useremail', (req, res, next) => {
+  User.findOne({ where: { email: req.params.useremail }})
+  .then(foundUser => {
+    if (foundUser) res.send(foundUser)
+    else res.send({user: 'email does not exist'})
+  })
+  .catch(console.error)
+})
+
 router.put('/sendResetCode', async (req, res, next) => {
   if (!req.body.email) res.status(400).send('You must send an email')
   const foundUser = await User.findOne({where: {email: req.body.email}})
