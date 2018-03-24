@@ -4,6 +4,7 @@ const Prayer = require('../db/models/prayer')
 const Update = require('../db/models/update')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
+const stripe = require('stripe')('sk_test_LR90mKCpaBvsj7u0D8Zwx6ET')
 
 module.exports = router
 
@@ -171,5 +172,22 @@ router.post('/sessions', (req, res, next) => {
       })
     }
   })
+  .catch(console.error)
+})
+
+router.post('/donor', async (req, res, next) => {
+  const { token, userInfo } = req.body
+  if (!token || !userInfo.email || !userInfo.password) {
+    res.status(400).send('Error: insufficient information')
+  }
+  stripe.customers.create({
+    email: userInfo.email,
+    source: token.id
+  })
+  .then(customer => {
+    console.log({stripeCustomerId: customer.id, ...userInfo})
+    return User.create({stripeCustomerId: customer.id, ...userInfo})
+  })
+  .then(createdUser => res.send(createdUser))
   .catch(console.error)
 })
