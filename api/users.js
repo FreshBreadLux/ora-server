@@ -4,7 +4,7 @@ const Prayer = require('../db/models/prayer')
 const Update = require('../db/models/update')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
-const stripe = require('stripe')('sk_test_LR90mKCpaBvsj7u0D8Zwx6ET')
+const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 
 module.exports = router
 
@@ -175,7 +175,7 @@ router.post('/sessions', (req, res, next) => {
   .catch(console.error)
 })
 
-router.post('/donor', async (req, res, next) => {
+router.post('/donor', (req, res, next) => {
   const { token, userInfo } = req.body
   if (!token || !userInfo.email || !userInfo.password) {
     res.status(400).send('Error: insufficient information')
@@ -189,5 +189,25 @@ router.post('/donor', async (req, res, next) => {
     return User.create({stripeCustomerId: customer.id, ...userInfo})
   })
   .then(createdUser => res.send(createdUser))
+  .catch(console.error)
+})
+
+router.post('/stripeCustomer', (req, res, next) => {
+  const { token, userInfo } = req.body
+  if (!token || !userInfo.email || !userInfo.password) {
+    res.status(400).send('Error: insufficient information')
+  }
+  stripe.customers.create({
+    email: userInfo.email,
+    source: token.id
+  })
+  .then(customer => {
+    return User.findOne({where: {email: userInfo.email}})
+    .then(foundUser => foundUser.update({
+      stripeCustomerId: customer.id,
+      ...userInfo
+    }))
+  })
+  .then(updatedUser => res.send(updatedUser))
   .catch(console.error)
 })

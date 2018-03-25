@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const stripe = require('stripe')('sk_test_LR90mKCpaBvsj7u0D8Zwx6ET')
+const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 
 module.exports = router
 
