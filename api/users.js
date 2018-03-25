@@ -178,7 +178,7 @@ router.post('/sessions', (req, res, next) => {
 router.post('/donor', (req, res, next) => {
   const { token, userInfo } = req.body
   if (!token || !userInfo.email || !userInfo.password) {
-    res.status(400).send('Error: insufficient information')
+    return res.status(400).send('Error: insufficient information')
   }
   stripe.customers.create({
     email: userInfo.email,
@@ -194,8 +194,8 @@ router.post('/donor', (req, res, next) => {
 
 router.post('/stripeCustomer', (req, res, next) => {
   const { token, userInfo } = req.body
-  if (!token || !userInfo.email || !userInfo.password) {
-    res.status(400).send('Error: insufficient information')
+  if (!token || !userInfo.email) {
+    return res.status(400).send('Error: insufficient information')
   }
   stripe.customers.create({
     email: userInfo.email,
