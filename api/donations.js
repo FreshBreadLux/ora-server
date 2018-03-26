@@ -29,7 +29,6 @@ router.post('/existingSubscription', (req, res, next) => {
 })
 
 router.post('/customSubscription', (req, res, next) => {
-  console.log('req.body: ', req.body)
   const { user, customAmount } = req.body
   stripe.plans.create({
     amount: customAmount,
@@ -38,7 +37,6 @@ router.post('/customSubscription', (req, res, next) => {
     product: process.env.ANGEL_INVESTOR_PRODUCT_ID
   })
   .then(plan => {
-    console.log('plan: ', plan)
     return stripe.subscriptions.create({
       customer: user.data.stripeCustomerId,
       items: [{plan: plan.id}]
