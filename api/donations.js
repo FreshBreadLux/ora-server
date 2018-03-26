@@ -5,13 +5,11 @@ module.exports = router
 
 router.post('/oneTime', (req, res, next) => {
   console.log('req.body: ', req.body)
-  const token = req.body.token
-  console.log('token received; ID: ', token.id)
   stripe.charges.create({
-    amount: 1000,
+    amount: req.body.oneTimeAmount,
     currency: 'usd',
     description: 'One time donation',
-    source: token.id,
+    customer: req.body.user.stripeCustomerId
   }, (err, charge) => {
     if (err) console.error(err)
     else res.send(charge)
