@@ -4,21 +4,18 @@ const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 module.exports = router
 
 router.post('/oneTime', (req, res, next) => {
-  console.log('req.body: ', req.body)
   stripe.charges.create({
     amount: req.body.oneTimeAmount,
     currency: 'usd',
     description: 'One time donation',
     customer: req.body.user.data.stripeCustomerId
-  }, (err, charge) => {
-    if (err) console.error(err)
-    else res.send(charge)
   })
+  .then(charge => res.send(charge))
+  .catch(console.error)
 })
 
 router.post('/existingSubscription', (req, res, next) => {
-  console.log('req.body: ', req.body)
-  const { user, selectedOption } = req.body;
+  const { user, selectedOption } = req.body
   let plan
   if (selectedOption === '25') plan = process.env.PLAN_25_ID
   else if (selectedOption === '100') plan = process.env.PLAN_100_ID
@@ -26,8 +23,27 @@ router.post('/existingSubscription', (req, res, next) => {
   stripe.subscriptions.create({
     customer: user.data.stripeCustomerId,
     items: [{plan}]
-  }, (err, subscription) => {
-    if (err) console.error(err)
-    else res.send(subscription)
   })
+  .then(subscription => res.send(subscription))
+  .catch(console.error)
+})
+
+router.post('/customSubscription', (req, res, next) => {
+  console.log('req.body: ', req.body)
+  const { user, customAmount } = req.body
+  stripe.plans.create({
+    amount: customAmount,
+    currency: 'usd',
+    interval: 'month',
+    product: process.env.ANGEL_INVESTOR_PRODUCT_ID
+  })
+  .then(plan => {
+    console.log('plan: ', plan)
+    return stripe.subscriptions.create({
+      customer: user.data.stripeCustomerId,
+      items: [{plan: plan.id}]
+    })
+  })
+  .then(subscription => res.send(subscription))
+  .catch(console.error)
 })

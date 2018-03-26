@@ -185,7 +185,6 @@ router.post('/donor', (req, res, next) => {
     source: token.id
   })
   .then(customer => {
-    console.log({stripeCustomerId: customer.id, ...userInfo})
     return User.create({stripeCustomerId: customer.id, ...userInfo})
   })
   .then(createdUser => res.send(createdUser))
