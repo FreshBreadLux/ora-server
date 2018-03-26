@@ -48,7 +48,6 @@ const User = db.define('user', {
     type: Sequelize.BOOLEAN,
     defaultValue: false
   },
-  // Unused as of version 1.0.1; may be used in later versions
   firstName: {
     type: Sequelize.STRING
   },
@@ -67,6 +66,10 @@ const User = db.define('user', {
   zip: {
     type: Sequelize.STRING
   },
+  stripeCustomerId: {
+    type: Sequelize.STRING
+  },
+  // Unused as of version 1.0.1; may be used in later versions
   phoneNumber: {
     type: Sequelize.INTEGER
   },
@@ -75,12 +78,6 @@ const User = db.define('user', {
   },
   gender: {
     type: Sequelize.ENUM('Male', 'Female')
-  },
-  stripeOneTimeToken: {
-    type: Sequelize.STRING
-  },
-  stripeCustomerId: {
-    type: Sequelize.STRING
   },
   unseenLevelUp: {
     type: Sequelize.BOOLEAN,
