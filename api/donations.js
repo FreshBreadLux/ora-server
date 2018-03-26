@@ -9,7 +9,7 @@ router.post('/oneTime', (req, res, next) => {
     amount: req.body.oneTimeAmount,
     currency: 'usd',
     description: 'One time donation',
-    customer: req.body.user.stripeCustomerId
+    customer: req.body.user.data.stripeCustomerId
   }, (err, charge) => {
     if (err) console.error(err)
     else res.send(charge)
