@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const User = require('../db/models/user')
 const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 
 module.exports = router
@@ -43,5 +44,16 @@ router.post('/customSubscription', (req, res, next) => {
     })
   })
   .then(subscription => res.send(subscription))
+  .catch(console.error)
+})
+
+router.get('/subscription/forUser/:userId', (req, res, next) => {
+  User.findById(req.params.userId)
+  .then(foundUser => stripe.customers.retrieve(foundUser.stripeCustomerId))
+  .then(stripeCustomer => {
+    console.log('stripeCustomer: ', stripeCustomer)
+    console.log('subscriptions: ', stripeCustomer.subscriptions)
+    res.send(stripeCustomer.subscriptions)
+  })
   .catch(console.error)
 })
