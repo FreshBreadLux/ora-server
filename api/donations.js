@@ -102,3 +102,10 @@ router.post('/subscription', (req, res, next) => {
   .then(subscription => res.send(subscription))
   .catch(console.error)
 })
+
+router.get('/chargeHistory/forUser/:userId', (req, res, next) => {
+  User.findById(req.params.userId)
+  .then(foundUser => stripe.charges.list({customer: foundUser.stripeCustomerId}))
+  .then(charges => res.send(charges))
+  .catch(console.error)
+})
