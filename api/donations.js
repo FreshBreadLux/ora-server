@@ -57,3 +57,25 @@ router.get('/subscription/forUser/:userId', (req, res, next) => {
   })
   .catch(console.error)
 })
+
+router.post('/updateSubscription/forUser/:userId', (req, res, next) => {
+  const { subscriptionId, updatePlanAmount } = req.body
+  stripe.subscriptions.del(subscriptionId)
+  .then(() => stripe.plans.create({
+    amount: updatePlanAmount,
+    currency: 'usd',
+    interval: 'month',
+    product: process.env.ANGEL_INVESTOR_PRODUCT_ID
+  }))
+  .then(plan => {
+    User.findById(req.params.userId)
+    .then(foundUser => {
+      return stripe.subscriptions.create({
+        customer: foundUser.stripeCustomerId,
+        items: [{ plan: plan.id }]
+      })
+    })
+  })
+  .then(subscription => res.send(subscription))
+  .catch(console.error)
+})
