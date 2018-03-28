@@ -81,3 +81,24 @@ router.delete('/subscription/:subscriptionId', (req, res, next) => {
   .then(result => res.send(result))
   .catch(console.error)
 })
+
+router.post('/subscription', (req, res, next) => {
+  const { userId, amount } = req.body
+  stripe.plans.create({
+    amount: amount,
+    currency: 'usd',
+    interval: 'month',
+    product: process.env.ANGEL_INVESTOR_PRODUCT_ID
+  })
+  .then(plan => {
+    return User.findById(userId)
+    .then(foundUser => {
+      return stripe.subscriptions.create({
+        customer: foundUser.stripeCustomerId,
+        items: [{ plan: plan.id }]
+      })
+    })
+  })
+  .then(subscription => res.send(subscription))
+  .catch(console.error)
+})
