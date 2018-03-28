@@ -50,11 +50,7 @@ router.post('/customSubscription', (req, res, next) => {
 router.get('/subscription/forUser/:userId', (req, res, next) => {
   User.findById(req.params.userId)
   .then(foundUser => stripe.customers.retrieve(foundUser.stripeCustomerId))
-  .then(stripeCustomer => {
-    console.log('stripeCustomer: ', stripeCustomer)
-    console.log('subscriptions: ', stripeCustomer.subscriptions)
-    res.send(stripeCustomer.subscriptions)
-  })
+  .then(stripeCustomer => res.send(stripeCustomer.subscriptions))
   .catch(console.error)
 })
 
@@ -77,5 +73,11 @@ router.post('/updateSubscription/forUser/:userId', (req, res, next) => {
     })
   })
   .then(subscription => res.send(subscription))
+  .catch(console.error)
+})
+
+router.delete('/subscription/:subscriptionId', (req, res, next) => {
+  stripe.subscriptions.del(req.params.subscriptionId)
+  .then(result => res.send(result))
   .catch(console.error)
 })
