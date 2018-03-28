@@ -68,7 +68,7 @@ router.post('/updateSubscription/forUser/:userId', (req, res, next) => {
     product: process.env.ANGEL_INVESTOR_PRODUCT_ID
   }))
   .then(plan => {
-    User.findById(req.params.userId)
+    return User.findById(req.params.userId)
     .then(foundUser => {
       return stripe.subscriptions.create({
         customer: foundUser.stripeCustomerId,
