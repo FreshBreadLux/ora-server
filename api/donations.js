@@ -62,52 +62,70 @@ router.get('/subscription/forUser/:userId', (req, res, next) => {
 })
 
 router.post('/updateSubscription/forUser/:userId', (req, res, next) => {
-  const { subscriptionId, updatePlanAmount } = req.body
-  stripe.subscriptions.del(subscriptionId)
-  .then(() => stripe.plans.create({
-    amount: updatePlanAmount,
-    currency: 'usd',
-    interval: 'month',
-    product: process.env.ANGEL_INVESTOR_PRODUCT_ID
-  }))
-  .then(plan => {
-    return User.findById(req.params.userId)
-    .then(foundUser => {
-      return stripe.subscriptions.create({
-        customer: foundUser.stripeCustomerId,
-        items: [{ plan: plan.id }]
+  try {
+    jwt.verify(req.headers.token, process.env.SECRET)
+    const { subscriptionId, updatePlanAmount } = req.body
+    stripe.subscriptions.del(subscriptionId)
+    .then(() => stripe.plans.create({
+      amount: updatePlanAmount,
+      currency: 'usd',
+      interval: 'month',
+      product: process.env.ANGEL_INVESTOR_PRODUCT_ID
+    }))
+    .then(plan => {
+      return User.findById(req.params.userId)
+      .then(foundUser => {
+        return stripe.subscriptions.create({
+          customer: foundUser.stripeCustomerId,
+          items: [{ plan: plan.id }]
+        })
       })
     })
-  })
-  .then(subscription => res.send(subscription))
-  .catch(console.error)
+    .then(subscription => res.send(subscription))
+    .catch(console.error)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
 })
 
 router.delete('/subscription/:subscriptionId', (req, res, next) => {
-  stripe.subscriptions.del(req.params.subscriptionId)
-  .then(result => res.send(result))
-  .catch(console.error)
+  try {
+    jwt.verify(req.headers.token, process.env.SECRET)
+    stripe.subscriptions.del(req.params.subscriptionId)
+    .then(result => res.send(result))
+    .catch(console.error)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
 })
 
 router.post('/subscription', (req, res, next) => {
-  const { userId, amount } = req.body
-  stripe.plans.create({
-    amount: amount,
-    currency: 'usd',
-    interval: 'month',
-    product: process.env.ANGEL_INVESTOR_PRODUCT_ID
-  })
-  .then(plan => {
-    return User.findById(userId)
-    .then(foundUser => {
-      return stripe.subscriptions.create({
-        customer: foundUser.stripeCustomerId,
-        items: [{ plan: plan.id }]
+  try {
+    jwt.verify(req.headers.token, process.env.SECRET)
+    const { userId, amount } = req.body
+    stripe.plans.create({
+      amount: amount,
+      currency: 'usd',
+      interval: 'month',
+      product: process.env.ANGEL_INVESTOR_PRODUCT_ID
+    })
+    .then(plan => {
+      return User.findById(userId)
+      .then(foundUser => {
+        return stripe.subscriptions.create({
+          customer: foundUser.stripeCustomerId,
+          items: [{ plan: plan.id }]
+        })
       })
     })
-  })
-  .then(subscription => res.send(subscription))
-  .catch(console.error)
+    .then(subscription => res.send(subscription))
+    .catch(console.error)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
 })
 
 router.get('/chargeHistory/forUser/:userId', (req, res, next) => {
