@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
 const stripe = require('stripe')(process.env.STRIPE_API_KEY)
+const jwt = require('jsonwebtoken')
 
 module.exports = router
 
@@ -48,10 +49,16 @@ router.post('/customSubscription', (req, res, next) => {
 })
 
 router.get('/subscription/forUser/:userId', (req, res, next) => {
-  User.findById(req.params.userId)
-  .then(foundUser => stripe.customers.retrieve(foundUser.stripeCustomerId))
-  .then(stripeCustomer => res.send(stripeCustomer.subscriptions))
-  .catch(console.error)
+  try {
+    jwt.verify(req.headers.token, process.env.SECRET)
+    User.findById(req.params.userId)
+    .then(foundUser => stripe.customers.retrieve(foundUser.stripeCustomerId))
+    .then(stripeCustomer => res.send(stripeCustomer.subscriptions))
+    .catch(console.error)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
 })
 
 router.post('/updateSubscription/forUser/:userId', (req, res, next) => {
@@ -104,8 +111,14 @@ router.post('/subscription', (req, res, next) => {
 })
 
 router.get('/chargeHistory/forUser/:userId', (req, res, next) => {
-  User.findById(req.params.userId)
-  .then(foundUser => stripe.charges.list({customer: foundUser.stripeCustomerId}))
-  .then(charges => res.send(charges))
-  .catch(console.error)
+  try {
+    jwt.verify(req.headers.token, process.env.SECRET)
+    User.findById(req.params.userId)
+    .then(foundUser => stripe.charges.list({customer: foundUser.stripeCustomerId}))
+    .then(charges => res.send(charges))
+    .catch(console.error)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
 })
