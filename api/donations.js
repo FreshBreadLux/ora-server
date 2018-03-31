@@ -132,7 +132,10 @@ router.get('/chargeHistory/forUser/:userId', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     User.findById(req.params.userId)
-    .then(foundUser => stripe.charges.list({customer: foundUser.stripeCustomerId}))
+    .then(foundUser => stripe.charges.list({
+      customer: foundUser.stripeCustomerId,
+      limit: 100
+    }))
     .then(charges => res.send(charges))
     .catch(console.error)
   } catch (error) {
