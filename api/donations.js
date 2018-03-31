@@ -143,3 +143,21 @@ router.get('/chargeHistory/forUser/:userId', (req, res, next) => {
     res.status(400).send('You do not have sufficient authorization')
   }
 })
+
+router.post('/buyCoffee', (req, res, next) => {
+  try {
+    jwt.verify(req.headers.token, process.env.SECRET)
+    User.findById(req.body.userId)
+    .then(foundUser => stripe.charges.create({
+      amount: 300,
+      currency: 'usd',
+      description: 'One time donation',
+      customer: foundUser.stripeCustomerId
+    }))
+    .then(charge => res.send(charge))
+    .catch(console.error)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
+})
