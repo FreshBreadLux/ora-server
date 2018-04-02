@@ -192,8 +192,8 @@ router.post('/buyCoffee', (req, res, next) => {
 })
 
 router.post('/webhook', (req, res, next) => {
-  console.log('req.body.data: ', req.body.data)
-  console.log('req.body.data.amount: ', req.body.data.amount)
-  console.log('req.body.data.customer: ', req.body.data.customer)
+  console.log('req.body.data.object: ', req.body.data.object)
+  console.log('req.body.data.object.amount: ', req.body.data.object.amount)
+  console.log('req.body.data.object.customer: ', req.body.data.object.customer)
   res.send(200)
 })
