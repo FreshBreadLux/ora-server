@@ -12,13 +12,7 @@ router.post('/oneTime', (req, res, next) => {
     description: 'One time donation',
     customer: req.body.user.data.stripeCustomerId
   })
-  .then(charge => {
-    return User.findById(req.body.user.data.id)
-    .then(user => user.update({
-      investmentTotal: user.investmentTotal + charge.amount
-    }))
-  })
-  .then(updatedUser => res.send(updatedUser))
+  .then(charge => res.send(charge))
   .catch(console.error)
 })
 
@@ -32,13 +26,7 @@ router.post('/existingSubscription', (req, res, next) => {
     customer: user.data.stripeCustomerId,
     items: [{plan}]
   })
-  .then(subscription => {
-    return User.findById(user.data.id)
-    .then(foundUser => foundUser.update({
-      investmentTotal: foundUser.investmentTotal + subscription.plan.amount
-    }))
-  })
-  .then(updatedUser => res.send(updatedUser))
+  .then(subscription => res.send(subscription))
   .catch(console.error)
 })
 
@@ -56,13 +44,7 @@ router.post('/customSubscription', (req, res, next) => {
       items: [{plan: plan.id}]
     })
   })
-  .then(subscription => {
-    return User.findById(user.data.id)
-    .then(foundUser => foundUser.update({
-      investmentTotal: foundUser.investmentTotal + subscription.plan.amount
-    }))
-  })
-  .then(updatedUser => res.send(updatedUser))
+  .then(subscription => res.send(subscription))
   .catch(console.error)
 })
 
@@ -93,9 +75,6 @@ router.post('/updateSubscription/forUser/:userId', (req, res, next) => {
     .then(plan => {
       return User.findById(req.params.userId)
       .then(user => {
-        user.update({
-          investmentTotal: user.investmentTotal + plan.amount
-        })
         return stripe.subscriptions.create({
           customer: user.stripeCustomerId,
           items: [{ plan: plan.id }]
@@ -135,9 +114,6 @@ router.post('/subscription', (req, res, next) => {
     .then(plan => {
       return User.findById(userId)
       .then(user => {
-        user.update({
-          investmentTotal: user.investmentTotal + plan.amount
-        })
         return stripe.subscriptions.create({
           customer: user.stripeCustomerId,
           items: [{ plan: plan.id }]
@@ -173,9 +149,6 @@ router.post('/buyCoffee', (req, res, next) => {
     jwt.verify(req.headers.token, process.env.SECRET)
     User.findById(req.body.userId)
     .then(user => {
-      user.update({
-        investmentTotal: user.investmentTotal + 300
-      })
       stripe.charges.create({
         amount: 300,
         currency: 'usd',
