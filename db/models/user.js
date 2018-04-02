@@ -69,6 +69,10 @@ const User = db.define('user', {
   stripeCustomerId: {
     type: Sequelize.STRING
   },
+  investmentTotal: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
+  },
   // Unused as of version 1.0.1; may be used in later versions
   phoneNumber: {
     type: Sequelize.INTEGER
