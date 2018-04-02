@@ -128,13 +128,13 @@ router.post('/subscription', (req, res, next) => {
   }
 })
 
-router.get('/chargeHistory/forUser/:userId', (req, res, next) => {
+router.get('/chargeHistory/forUser/:userId/limit/:limit', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     User.findById(req.params.userId)
     .then(foundUser => stripe.charges.list({
       customer: foundUser.stripeCustomerId,
-      limit: 100
+      limit: +req.params.limit
     }))
     .then(charges => res.send(charges))
     .catch(console.error)
