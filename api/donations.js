@@ -148,14 +148,12 @@ router.post('/buyCoffee', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     User.findById(req.body.userId)
-    .then(user => {
-      stripe.charges.create({
-        amount: 300,
-        currency: 'usd',
-        description: 'One time donation',
-        customer: user.stripeCustomerId
-      })
-    })
+    .then(user => stripe.charges.create({
+      amount: 300,
+      currency: 'usd',
+      description: 'One time donation',
+      customer: user.stripeCustomerId
+    }))
     .then(charge => {
       console.log('buyCoffee charge: ', charge)
       res.send(charge)
