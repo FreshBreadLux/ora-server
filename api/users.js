@@ -50,7 +50,8 @@ router.get('/:userId', (req, res, next) => {
       consecutiveDays: foundUser.consecutiveDays,
       isAdmin: foundUser.isAdmin,
       firstName: foundUser.firstName,
-      lastName: foundUser.lastName
+      lastName: foundUser.lastName,
+      investmentTotal: foundUser.investmentTotal
     }
     res.status(201).send(scrubbedUser)
   })
