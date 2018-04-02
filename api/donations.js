@@ -190,3 +190,9 @@ router.post('/buyCoffee', (req, res, next) => {
     res.status(400).send('You do not have sufficient authorization')
   }
 })
+
+router.post('/webhook', (req, res, next) => {
+  const eventJson = JSON.parse(req.body)
+  console.log('eventJson: ', eventJson)
+  res.send(200)
+})
