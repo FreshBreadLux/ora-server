@@ -192,7 +192,6 @@ router.post('/buyCoffee', (req, res, next) => {
 })
 
 router.post('/webhook', (req, res, next) => {
-  const eventJson = JSON.parse(req.body)
-  console.log('eventJson: ', eventJson)
+  console.log('req.body: ', req.body)
   res.send(200)
 })
