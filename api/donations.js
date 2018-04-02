@@ -156,7 +156,10 @@ router.post('/buyCoffee', (req, res, next) => {
         customer: user.stripeCustomerId
       })
     })
-    .then(charge => res.send(charge))
+    .then(charge => {
+      console.log('buyCoffee charge: ', charge)
+      res.send(charge)
+    })
     .catch(console.error)
   } catch (error) {
     console.error(error)
