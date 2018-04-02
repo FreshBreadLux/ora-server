@@ -175,3 +175,12 @@ router.post('/webhook', (req, res, next) => {
   })
   .catch(console.error)
 })
+
+router.put('/subscription/:subscriptionId/billingCycle', (req, res, next) => {
+  stripe.subscriptions.update(req.params.subscriptionId, {
+    trial_end: req.body.billingDate,
+    prorate: false,
+  })
+  .then(updatedSubscription => res.send(updatedSubscription))
+  .catch(console.error)
+})
