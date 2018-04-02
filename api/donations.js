@@ -192,8 +192,12 @@ router.post('/buyCoffee', (req, res, next) => {
 })
 
 router.post('/webhook', (req, res, next) => {
-  console.log('req.body.data.object: ', req.body.data.object)
-  console.log('req.body.data.object.amount: ', req.body.data.object.amount)
-  console.log('req.body.data.object.customer: ', req.body.data.object.customer)
-  res.send(200)
+  const { amount, customer } = req.body.data.object
+  User.findOne({where: {stripeCustomerId: customer}})
+  .then(user => user.update({investmentTotal: user.investmentTotal + amount}))
+  .then(updatedUser => {
+    console.log('updatedUser: ', updatedUser)
+    res.send(200)
+  })
+  .catch(console.error)
 })
