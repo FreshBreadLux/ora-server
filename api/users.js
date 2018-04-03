@@ -213,3 +213,24 @@ router.post('/stripeCustomer', (req, res, next) => {
   .then(updatedUser => res.send(updatedUser))
   .catch(console.error)
 })
+
+router.post('/loginDonor', (req, res, next) => {
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).send('You must send an email and password')
+  }
+  User.findOne({where: {email: req.body.email}})
+  .then(foundUser => {
+    return foundUser.update({pushToken: req.body.pushToken})
+  })
+  .then(updatedUser => {
+    if (!updatedUser.correctPassword(req.body.password)) {
+      res.status(401).send('The email or password is incorrect')
+    } else {
+      res.status(201).send({
+        userId: updatedUser.id,
+        jwToken: createToken(updatedUser)
+      })
+    }
+  })
+  .catch(console.error)
+})
