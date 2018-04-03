@@ -31,12 +31,16 @@ function generateResetCode() {
 }
 
 router.get('/byEmail/:useremail', (req, res, next) => {
-  User.findOne({ where: { email: req.params.useremail }})
-  .then(user => {
-    if (user) res.send({id: user.id, stripeCustomerId: !!user.stripeCustomerId})
-    else res.send({user: 'email does not exist'})
-  })
-  .catch(console.error)
+  if (req.params.useremail) {
+    User.findOne({ where: { email: req.params.useremail }})
+    .then(user => {
+      if (user) res.send({id: user.id, stripeCustomerId: !!user.stripeCustomerId})
+      else res.send({user: 'email does not exist'})
+    })
+    .catch(console.error)
+  } else {
+    res.send({user: 'please send a valid email'})
+  }
 })
 
 router.get('/:userId', (req, res, next) => {
@@ -59,7 +63,7 @@ router.get('/:userId', (req, res, next) => {
 })
 
 router.put('/sendResetCode', async (req, res, next) => {
-  if (!req.body.email) res.status(400).send('You must send an email')
+  if (!req.body.email) return res.status(400).send('You must send an email')
   const foundUser = await User.findOne({where: {email: req.body.email}})
   if (!foundUser) {
     res.status(401).send('That email is incorrect')
@@ -80,7 +84,7 @@ router.put('/sendResetCode', async (req, res, next) => {
 })
 
 router.put('/resetPassword', async (req, res, next) => {
-  if (!req.body.resetCode || !req.body.password) res.status(400).send('You must send a reset code and password')
+  if (!req.body.resetCode || !req.body.password) return res.status(400).send('You must send a reset code and password')
   const foundUser = await User.findOne({where: {resetCode: req.body.resetCode}})
   if (!foundUser) {
     res.status(401).send('That reset code is incorrect')
@@ -140,7 +144,7 @@ router.get('/:userId/views', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
   if (!req.body.email || !req.body.password) {
-    res.status(400).send('You must send an email and password')
+    return res.status(400).send('You must send an email and password')
   }
   User.create(req.body)
   .then(user => {
@@ -162,7 +166,7 @@ router.post('/', (req, res, next) => {
 
 router.post('/sessions', (req, res, next) => {
   if (!req.body.email || !req.body.password) {
-    res.status(400).send('You must send an email and password')
+    return res.status(400).send('You must send an email and password')
   }
   User.findOne({where: {email: req.body.email}})
   .then(foundUser => {
