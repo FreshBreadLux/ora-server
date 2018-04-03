@@ -31,6 +31,7 @@ function generateResetCode() {
 }
 
 router.get('/byEmail/:useremail', (req, res, next) => {
+  console.log('req.params.useremail: ', req.params.useremail)
   if (req.params.useremail) {
     User.findOne({ where: { email: req.params.useremail }})
     .then(user => {
