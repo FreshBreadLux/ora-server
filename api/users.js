@@ -33,7 +33,7 @@ function generateResetCode() {
 router.get('/byEmail/:useremail', (req, res, next) => {
   User.findOne({ where: { email: req.params.useremail }})
   .then(user => {
-    if (user) res.send({id: user.id, stripeCustomerId: user.stripeCustomerId})
+    if (user) res.send({id: user.id, stripeCustomerId: !!user.stripeCustomerId})
     else res.send({user: 'email does not exist'})
   })
   .catch(console.error)
