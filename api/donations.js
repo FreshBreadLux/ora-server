@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
+const Subscription = require('../utils/subscriptionsLogicalModel')
 const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 const jwt = require('jsonwebtoken')
 
@@ -176,8 +177,8 @@ router.post('/webhook', (req, res, next) => {
   .catch(console.error)
 })
 
-router.put('/subscription/:subscriptionId/billingCycle', (req, res, next) => {
-  stripe.subscriptions.update(req.params.subscriptionId, {
+router.put('/subscription/:subscriptionId', (req, res, next) => {
+  Subscription.update(req.params.subscriptionId, {
     trial_end: req.body.billingDate,
     prorate: false,
   })
