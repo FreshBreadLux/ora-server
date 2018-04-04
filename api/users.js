@@ -30,10 +30,9 @@ function generateResetCode() {
   return resetCode
 }
 
-router.get('/byEmail/:useremail', (req, res, next) => {
-  console.log('req.params.useremail: ', req.params.useremail)
-  if (req.params.useremail) {
-    User.findOne({ where: { email: req.params.useremail }})
+router.get('/', (req, res, next) => {
+  if (req.query.email) {
+    User.findOne({ where: { email: req.query.email }})
     .then(user => {
       if (user) res.send({id: user.id, stripeCustomerId: !!user.stripeCustomerId})
       else res.send({user: 'email does not exist'})
@@ -188,6 +187,7 @@ router.post('/donor', (req, res, next) => {
   if (!token || !userInfo.email || !userInfo.password) {
     return res.status(400).send('Error: insufficient information')
   }
+  delete req.body.userInfo.isAdmin
   stripe.customers.create({
     email: userInfo.email,
     source: token.id
@@ -195,7 +195,7 @@ router.post('/donor', (req, res, next) => {
   .then(customer => {
     return User.create({stripeCustomerId: customer.id, ...userInfo})
   })
-  .then(createdUser => res.send(createdUser))
+  .then(createdUser => res.send(createdUser)) // TODO: SCRUB USER
   .catch(console.error)
 })
 
