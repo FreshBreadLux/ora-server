@@ -6,4 +6,4 @@ class Subscription {
   }
 }
 
-export default Subscription
+module.exports = Subscription
