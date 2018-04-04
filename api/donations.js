@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
 const Subscription = require('../utils/subscriptionsLogicalModel')
+const Plan = require('../utils/plansLogicalModel')
 const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 const jwt = require('jsonwebtoken')
 
@@ -106,19 +107,11 @@ router.post('/subscription', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     const { userId, amount } = req.body
-    stripe.plans.create({
-      amount: amount,
-      currency: 'usd',
-      interval: 'month',
-      product: process.env.ANGEL_INVESTOR_PRODUCT_ID
-    })
+    Plan.create(amount)
     .then(plan => {
       return User.findById(userId)
       .then(user => {
-        return stripe.subscriptions.create({
-          customer: user.stripeCustomerId,
-          items: [{ plan: plan.id }]
-        })
+        return Subscription.create(user.stripeCustomerId, plan.id)
       })
     })
     .then(subscription => res.send(subscription))
@@ -177,7 +170,7 @@ router.post('/webhook', (req, res, next) => {
   .catch(console.error)
 })
 
-router.put('/subscription/:subscriptionId', (req, res, next) => {
+router.put('/subscription/:subscriptionId/billingAnchor', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     const { billingDate } = req.body, { subscriptionId } = req.params
