@@ -178,10 +178,14 @@ router.post('/webhook', (req, res, next) => {
 })
 
 router.put('/subscription/:subscriptionId', (req, res, next) => {
-  Subscription.update(req.params.subscriptionId, {
-    trial_end: req.body.billingDate,
-    prorate: false,
-  })
-  .then(updatedSubscription => res.send(updatedSubscription))
-  .catch(console.error)
+  try {
+    jwt.verify(req.headers.token, process.env.SECRET)
+    const { billingDate } = req.body, { subscriptionId } = req.params
+    Subscription.updateBillingAnchor(subscriptionId, billingDate)
+    .then(updatedSubscription => res.send(updatedSubscription))
+    .catch(console.error)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
 })
