@@ -182,23 +182,6 @@ router.post('/sessions', (req, res, next) => {
   .catch(console.error)
 })
 
-router.post('/donor', (req, res, next) => {
-  const { token, userInfo } = req.body
-  if (!token || !userInfo.email || !userInfo.password) {
-    return res.status(400).send('Error: insufficient information')
-  }
-  delete req.body.userInfo.isAdmin
-  stripe.customers.create({
-    email: userInfo.email,
-    source: token.id
-  })
-  .then(customer => {
-    return User.create({stripeCustomerId: customer.id, ...userInfo})
-  })
-  .then(createdUser => res.send(createdUser)) // TODO: SCRUB USER
-  .catch(console.error)
-})
-
 router.post('/stripeCustomer', (req, res, next) => {
   const { token, userInfo } = req.body
   if (!token || !userInfo.email) {
