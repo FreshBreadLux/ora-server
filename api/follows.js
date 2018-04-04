@@ -35,7 +35,7 @@ router.post('/', (req, res, next) => {
       })
     })
   })
-  .catch(console.error)
+  .catch(next)
 })
 
 router.delete('/followedId/:followedId/followerId/:followerId', (req, res, next) => {
@@ -46,7 +46,7 @@ router.delete('/followedId/:followedId/followerId/:followerId', (req, res, next)
     prayer.update({ totalFollows: totalFollows - 1 })
   })
   .then(() => res.status(201).send('Unfollow successful'))
-  .catch(console.error)
+  .catch(next)
 })
 
 router.put('/notify/followedId/:followedId', async (req, res, next) => {
@@ -71,6 +71,6 @@ router.put('/notify/followedId/:followedId', async (req, res, next) => {
       res.status(201).send(prayer)
     }
   } catch (err) {
-    console.error(err)
+    next(err)
   }
 })

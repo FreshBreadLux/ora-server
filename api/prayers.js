@@ -129,7 +129,7 @@ router.put('/next', async (req, res, next) => {
     }
     res.send({newView, updatedPrayer, scrubbedUser})
   } catch (err) {
-    console.error(err)
+    next(err)
   }
 })
 
@@ -137,14 +137,14 @@ router.put('/edit/:prayerId', (req, res, next) => {
   Prayer.findById(req.params.prayerId)
   .then(foundPrayer => foundPrayer.update(req.body))
   .then(updatedPrayer => res.status(201).send(updatedPrayer))
-  .catch(console.error)
+  .catch(next)
 })
 
 router.put('/close/:prayerId', (req, res, next) => {
   Prayer.findById(req.params.prayerId)
   .then(foundPrayer => foundPrayer.update(req.body))
   .then(closedPrayer => res.status(201).send(closedPrayer))
-  .catch(console.error)
+  .catch(next)
 })
 
 router.post('/', (req, res, next) => {
@@ -152,7 +152,7 @@ router.post('/', (req, res, next) => {
     jwt.verify(req.headers.token, process.env.SECRET)
     Prayer.create(req.body)
     .then(prayer => res.json(prayer))
-    .catch(console.error)
+    .catch(next)
   } catch (error) {
     console.error(error)
     res.status(400).send('You do not have sufficient authorization')
@@ -171,7 +171,7 @@ router.delete('/:prayerId', (req, res, next) => {
       }
     })
     .then(() => res.status(201).send('Prayer deleted'))
-    .catch(console.error)
+    .catch(next)
   } catch (error) {
     console.error(error)
     res.status(400).send('You do not have sufficient authorization')

@@ -6,5 +6,5 @@ module.exports = router
 router.get('/', (req, res, next) => {
   FlagReason.findAll({ order: [['createdAt']] })
   .then(flagReasons => res.send(flagReasons))
-  .catch(console.error)
+  .catch(next)
 })

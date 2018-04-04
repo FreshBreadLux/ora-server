@@ -27,5 +27,5 @@ router.post('/', (req, res, next) => {
       else console.log('Flag email sent: ', info.response)
     })
   })
-  .catch(console.error)
+  .catch(next)
 })
