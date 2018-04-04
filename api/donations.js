@@ -94,7 +94,7 @@ router.post('/updateSubscription/forUser/:userId', (req, res, next) => {
 router.delete('/subscription/:subscriptionId', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
-    stripe.subscriptions.del(req.params.subscriptionId)
+    Subscription.delete(req.params.subscriptionId)
     .then(result => res.send(result))
     .catch(console.error)
   } catch (error) {

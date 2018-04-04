@@ -13,6 +13,9 @@ class Subscription {
       prorate: false,
     })
   }
+  static delete(subscriptionId) {
+    return stripe.subscriptions.del(subscriptionId)
+  }
 }
 
 module.exports = Subscription
