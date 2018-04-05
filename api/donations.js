@@ -26,18 +26,23 @@ router.post('/oneTime', (req, res, next) => {
   .catch(next)
 })
 
-router.post('/existingSubscription', (req, res, next) => {
-  const { user, selectedOption } = req.body
-  let plan
-  if (selectedOption === '25') plan = process.env.PLAN_25_ID
-  else if (selectedOption === '100') plan = process.env.PLAN_100_ID
-  else if (selectedOption === '200') plan = process.env.PLAN_200_ID
-  stripe.subscriptions.create({
-    customer: user.data.stripeCustomerId,
-    items: [{plan}]
-  })
-  .then(subscription => res.send(subscription))
-  .catch(next)
+router.post('/subscription', (req, res, next) => {
+  try {
+    jwt.verify(req.headers.token, process.env.SECRET)
+    const { userId, amount } = req.body
+    Plan.findOrCreate(amount)
+    .then(plan => {
+      return User.findById(userId)
+      .then(user => {
+        return Subscription.create(user.stripeCustomerId, plan.id)
+      })
+    })
+    .then(subscription => res.send(subscription))
+    .catch(next)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
 })
 
 router.get('/subscription/forUser/:userId', (req, res, next) => {
@@ -86,25 +91,6 @@ router.delete('/subscription/:subscriptionId', (req, res, next) => {
     jwt.verify(req.headers.token, process.env.SECRET)
     Subscription.delete(req.params.subscriptionId)
     .then(result => res.send(result))
-    .catch(next)
-  } catch (error) {
-    console.error(error)
-    res.status(400).send('You do not have sufficient authorization')
-  }
-})
-
-router.post('/subscription', (req, res, next) => {
-  try {
-    jwt.verify(req.headers.token, process.env.SECRET)
-    const { userId, amount } = req.body
-    Plan.create(amount)
-    .then(plan => {
-      return User.findById(userId)
-      .then(user => {
-        return Subscription.create(user.stripeCustomerId, plan.id)
-      })
-    })
-    .then(subscription => res.send(subscription))
     .catch(next)
   } catch (error) {
     console.error(error)
