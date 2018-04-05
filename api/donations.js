@@ -86,27 +86,6 @@ router.get('/charges', (req, res, next) => {
   }
 })
 
-router.post('/buyCoffee', (req, res, next) => {
-  try {
-    jwt.verify(req.headers.token, process.env.SECRET)
-    User.findById(req.body.userId)
-    .then(user => stripe.charges.create({
-      amount: 300,
-      currency: 'usd',
-      description: 'One time donation',
-      customer: user.stripeCustomerId
-    }))
-    .then(charge => {
-      console.log('buyCoffee charge: ', charge)
-      res.send(charge)
-    })
-    .catch(next)
-  } catch (error) {
-    console.error(error)
-    res.status(400).send('You do not have sufficient authorization')
-  }
-})
-
 router.post('/webhook', (req, res, next) => {
   const { amount, customer } = req.body.data.object
   User.findOne({where: {stripeCustomerId: customer}})
