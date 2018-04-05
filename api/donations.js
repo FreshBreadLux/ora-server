@@ -9,14 +9,14 @@ const jwt = require('jsonwebtoken')
 
 module.exports = router
 
-router.post('/customer', (req, res, next) => {
+router.post('/customers', (req, res, next) => {
   const { email, token } = req.body
   Customer.create(email, token)
   .then(customer => res.send(customer))
   .catch(next)
 })
 
-router.post('/charge', (req, res, next) => {
+router.post('/charges', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     Charge.create(req.body.customerId, req.body.amount)
@@ -28,7 +28,7 @@ router.post('/charge', (req, res, next) => {
   }
 })
 
-router.post('/subscription', (req, res, next) => {
+router.post('/subscriptions', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     const { userId, amount } = req.body
@@ -47,11 +47,11 @@ router.post('/subscription', (req, res, next) => {
   }
 })
 
-router.get('/subscription/forUser/:userId', (req, res, next) => {
+router.get('/subscriptions', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
-    User.findById(req.params.userId)
-    .then(foundUser => stripe.customers.retrieve(foundUser.stripeCustomerId))
+    User.findById(req.query.userId)
+    .then(foundUser => Customer.findById(foundUser.stripeCustomerId))
     .then(stripeCustomer => res.send(stripeCustomer.subscriptions))
     .catch(next)
   } catch (error) {
@@ -60,35 +60,7 @@ router.get('/subscription/forUser/:userId', (req, res, next) => {
   }
 })
 
-router.post('/updateSubscription/forUser/:userId', (req, res, next) => {
-  try {
-    jwt.verify(req.headers.token, process.env.SECRET)
-    const { subscriptionId, updatePlanAmount } = req.body
-    stripe.subscriptions.del(subscriptionId)
-    .then(() => stripe.plans.create({
-      amount: updatePlanAmount,
-      currency: 'usd',
-      interval: 'month',
-      product: process.env.ANGEL_INVESTOR_PRODUCT_ID
-    }))
-    .then(plan => {
-      return User.findById(req.params.userId)
-      .then(user => {
-        return stripe.subscriptions.create({
-          customer: user.stripeCustomerId,
-          items: [{ plan: plan.id }]
-        })
-      })
-    })
-    .then(subscription => res.send(subscription))
-    .catch(next)
-  } catch (error) {
-    console.error(error)
-    res.status(400).send('You do not have sufficient authorization')
-  }
-})
-
-router.delete('/subscription/:subscriptionId', (req, res, next) => {
+router.delete('/subscriptions/:subscriptionId', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     Subscription.delete(req.params.subscriptionId)
@@ -100,14 +72,11 @@ router.delete('/subscription/:subscriptionId', (req, res, next) => {
   }
 })
 
-router.get('/chargeHistory/forUser/:userId/limit/:limit', (req, res, next) => {
+router.get('/charges', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
-    User.findById(req.params.userId)
-    .then(foundUser => stripe.charges.list({
-      customer: foundUser.stripeCustomerId,
-      limit: +req.params.limit
-    }))
+    User.findById(req.query.userId)
+    .then(foundUser => Charge.findAll(foundUser.stripeCustomerId, req.query.limit))
     .then(charges => res.send(charges))
     .catch(next)
   } catch (error) {
@@ -148,7 +117,7 @@ router.post('/webhook', (req, res, next) => {
   .catch(next)
 })
 
-router.put('/subscription/:subscriptionId/billingAnchor', (req, res, next) => {
+router.put('/subscriptions/:subscriptionId/billingAnchor', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     const { billingDate } = req.body, { subscriptionId } = req.params

@@ -9,6 +9,12 @@ class Charge {
       customer: customerId
     })
   }
+  static findAll(customerId, limit) {
+    return stripe.charges.list({
+      customer: customerId,
+      limit
+    })
+  }
 }
 
 module.exports = Charge
