@@ -182,26 +182,6 @@ router.post('/sessions', (req, res, next) => {
   .catch(console.error)
 })
 
-router.post('/stripeCustomer', (req, res, next) => {
-  const { token, userInfo } = req.body
-  if (!token || !userInfo.email) {
-    return res.status(400).send('Error: insufficient information')
-  }
-  stripe.customers.create({
-    email: userInfo.email,
-    source: token.id
-  })
-  .then(customer => {
-    return User.findOne({where: {email: userInfo.email}})
-    .then(foundUser => foundUser.update({
-      stripeCustomerId: customer.id,
-      ...userInfo
-    }))
-  })
-  .then(updatedUser => res.send(updatedUser))
-  .catch(console.error)
-})
-
 router.post('/loginDonor', (req, res, next) => {
   if (!req.body.email || !req.body.password) {
     return res.status(400).send('You must send an email and password')
