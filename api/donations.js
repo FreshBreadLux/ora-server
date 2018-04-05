@@ -17,9 +17,15 @@ router.post('/customer', (req, res, next) => {
 })
 
 router.post('/charge', (req, res, next) => {
-  Charge.create(req.body.customerId, req.body.amount)
-  .then(charge => res.send(charge))
-  .catch(next)
+  try {
+    jwt.verify(req.headers.token, process.env.SECRET)
+    Charge.create(req.body.customerId, req.body.amount)
+    .then(charge => res.send(charge))
+    .catch(next)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
 })
 
 router.post('/subscription', (req, res, next) => {

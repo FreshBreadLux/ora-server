@@ -7,6 +7,9 @@ class Customer {
       source: token.id
     })
   }
+  static findById(customerId) {
+    return stripe.customers.retrieve(customerId)
+  }
 }
 
 module.exports = Customer
