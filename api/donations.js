@@ -20,9 +20,7 @@ router.post('/charges', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     User.findById(req.body.userId)
-    .then(user => {
-      return Charge.create(user.stripeCustomerId, req.body.amount)
-    })
+    .then(user => Charge.create(user.stripeCustomerId, req.body.amount))
     .then(charge => res.send(charge))
     .catch(next)
   } catch (error) {
