@@ -3,6 +3,7 @@ const User = require('../db/models/user')
 const Subscription = require('../utils/subscriptionsLogicalModel')
 const Plan = require('../utils/plansLogicalModel')
 const Customer = require('../utils/customersLogicalModel')
+const Charge = require('../utils/chargesLogicalModel')
 const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 const jwt = require('jsonwebtoken')
 
@@ -15,13 +16,8 @@ router.post('/customer', (req, res, next) => {
   .catch(next)
 })
 
-router.post('/oneTime', (req, res, next) => {
-  stripe.charges.create({
-    amount: req.body.oneTimeAmount,
-    currency: 'usd',
-    description: 'One time donation',
-    customer: req.body.user.data.stripeCustomerId
-  })
+router.post('/charge', (req, res, next) => {
+  Charge.create(req.body.customerId, req.body.amount)
   .then(charge => res.send(charge))
   .catch(next)
 })
@@ -96,24 +92,6 @@ router.delete('/subscription/:subscriptionId', (req, res, next) => {
     console.error(error)
     res.status(400).send('You do not have sufficient authorization')
   }
-})
-
-router.post('/customSubscription', (req, res, next) => {
-  const { user, customAmount } = req.body
-  stripe.plans.create({
-    amount: customAmount,
-    currency: 'usd',
-    interval: 'month',
-    product: process.env.ANGEL_INVESTOR_PRODUCT_ID
-  })
-  .then(plan => {
-    return stripe.subscriptions.create({
-      customer: user.data.stripeCustomerId,
-      items: [{plan: plan.id}]
-    })
-  })
-  .then(subscription => res.send(subscription))
-  .catch(next)
 })
 
 router.get('/chargeHistory/forUser/:userId/limit/:limit', (req, res, next) => {
