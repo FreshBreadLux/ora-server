@@ -4,7 +4,6 @@ const Subscription = require('../utils/subscriptionsLogicalModel')
 const Plan = require('../utils/plansLogicalModel')
 const Customer = require('../utils/customersLogicalModel')
 const Charge = require('../utils/chargesLogicalModel')
-const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 const jwt = require('jsonwebtoken')
 
 module.exports = router
@@ -42,6 +41,18 @@ router.post('/subscriptions', (req, res, next) => {
     })
     .then(subscription => res.send(subscription))
     .catch(next)
+  } catch (error) {
+    console.error(error)
+    res.status(400).send('You do not have sufficient authorization')
+  }
+})
+
+router.put('/subscriptions/:subscriptionId', (req, res, next) => {
+  try {
+    jwt.verify(req.headers.token, process.env.SECRET)
+    Plan.findOrCreate(req.body.amount)
+    .then(plan => Subscription.updatePlan(req.params.subscriptionId, plan.id))
+    .then(updatedSubscription => res.send(updatedSubscription))
   } catch (error) {
     console.error(error)
     res.status(400).send('You do not have sufficient authorization')

@@ -1,10 +1,15 @@
 const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 
 class Subscription {
-  static create(customerId, stripePlanId) {
+  static create(customerId, planId) {
     return stripe.subscriptions.create({
       customer: customerId,
-      items: [{ plan: stripePlanId }]
+      items: [{ plan: planId }]
+    })
+  }
+  static updatePlan(subscriptionId, planId) {
+    return stripe.subscriptions.update(subscriptionId, {
+      items: [{ plan: planId }]
     })
   }
   static updateBillingAnchor(subscriptionId, trialEnd) {
