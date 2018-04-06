@@ -8,9 +8,9 @@ class Subscription {
     })
   }
   static updatePlan(subscriptionId, planId) {
-    stripe.subscriptions.retrieve(subscriptionId)
+    return stripe.subscriptions.retrieve(subscriptionId)
     .then(subscription => {
-      stripe.subscriptions.update(subscriptionId, {
+      return stripe.subscriptions.update(subscriptionId, {
         items: [{ id: subscription.items.data[0].id, plan: planId }]
       })
     })
