@@ -57,6 +57,7 @@ router.put('/subscriptions/:subscriptionId', (req, res, next) => {
     })
     .then(updatedSubscription => {
       console.log('updatedSubscription: ', updatedSubscription)
+      console.log('updatedSubscription: ', updatedSubscription.items.data)
       res.send(updatedSubscription)
     })
   } catch (error) {
