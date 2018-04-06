@@ -9,7 +9,7 @@ class Subscription {
   }
   static updatePlan(subscriptionId, planId) {
     return stripe.subscriptions.update(subscriptionId, {
-      items: [{ plan: planId }]
+      items: [{ id: subscriptionId, plan: planId }]
     })
   }
   static updateBillingAnchor(subscriptionId, trialEnd) {
