@@ -8,8 +8,11 @@ class Subscription {
     })
   }
   static updatePlan(subscriptionId, planId) {
-    return stripe.subscriptions.update(subscriptionId, {
-      items: [{ plan: planId }]
+    stripe.subscriptions.retrieve(subscriptionId)
+    .then(subscription => {
+      stripe.subscriptions.update(subscriptionId, {
+        items: [{ id: subscription.items.data[0].id, plan: planId }]
+      })
     })
   }
   static updateBillingAnchor(subscriptionId, trialEnd) {
