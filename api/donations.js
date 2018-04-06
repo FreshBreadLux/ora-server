@@ -53,7 +53,7 @@ router.put('/subscriptions/:subscriptionId', (req, res, next) => {
     Plan.findOrCreate(req.body.amount)
     .then(plan => {
       console.log('plan: ', plan)
-      Subscription.updatePlan(req.params.subscriptionId, plan.id)
+      return Subscription.updatePlan(req.params.subscriptionId, plan.id)
     })
     .then(updatedSubscription => {
       console.log('updatedSubscription: ', updatedSubscription)
