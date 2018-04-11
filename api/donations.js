@@ -51,15 +51,8 @@ router.put('/subscriptions/:subscriptionId', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     Plan.findOrCreate(req.body.amount)
-    .then(plan => {
-      console.log('plan: ', plan)
-      return Subscription.updatePlan(req.params.subscriptionId, plan.id)
-    })
-    .then(updatedSubscription => {
-      console.log('updatedSubscription: ', updatedSubscription)
-      console.log('updatedSubscription: ', updatedSubscription.items.data)
-      res.send(updatedSubscription)
-    })
+    .then(plan => Subscription.updatePlan(req.params.subscriptionId, plan.id))
+    .then(updatedSubscription => res.send(updatedSubscription))
   } catch (error) {
     console.error(error)
     res.status(400).send('You do not have sufficient authorization')

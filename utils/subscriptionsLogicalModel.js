@@ -11,7 +11,8 @@ class Subscription {
     return stripe.subscriptions.retrieve(subscriptionId)
     .then(subscription => {
       return stripe.subscriptions.update(subscriptionId, {
-        items: [{ id: subscription.items.data[0].id, plan: planId }]
+        items: [{ id: subscription.items.data[0].id, plan: planId }],
+        prorate: false,
       })
     })
   }
