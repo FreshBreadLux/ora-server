@@ -13,11 +13,10 @@ const smtpTransport = nodemailer.createTransport({
 })
 
 router.post('/', (req, res, next) => {
-  console.log('Hit the support post route: ', req.body)
   smtpTransport.sendMail({
     from: req.body.email,
     to: process.env.NODEMAILER_USER,
-    subject: `Website Support Form: ${req.body.subject}`,
+    subject: `Website ${req.query.form} form: ${req.body.subject}`,
     text: req.body.body
   }, (err, info) => {
     if (err) {
