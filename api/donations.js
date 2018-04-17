@@ -103,7 +103,7 @@ router.post('/webhook', (req, res, next) => {
   .then(user => user.update({investmentTotal: user.investmentTotal + amount}))
   .then(updatedUser => {
     console.log('updatedUser: ', updatedUser)
-    res.send(200)
+    res.sendStatus(200)
   })
   .catch(next)
 })
