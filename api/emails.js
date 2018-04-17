@@ -29,3 +29,20 @@ router.post('/forms', (req, res, next) => {
     }
   })
 })
+
+router.post('/donorSignup', (req, res, next) => {
+  smtpTransport.sendMail({
+    id: 3,
+    to: req.body.email,
+    attr: { FIRSTNAME: req.body.firstName }
+  }, (err, info) => {
+    if (err) {
+      console.error(err)
+      res.status(300).send('There was an error sending your message')
+    }
+    else {
+      console.log('Message sent: ', info)
+      res.send('Thank you! Your message has been sent')
+    }
+  })
+})
