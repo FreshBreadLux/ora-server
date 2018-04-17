@@ -37,7 +37,8 @@ router.post('/donorSignup', (req, res, next) => {
     attr: { FIRSTNAME: req.body.firstName }
   }, (err, info) => {
     if (err) {
-      console.error(err)
+      console.error('error: ', err)
+      console.log('There was an error sending the template')
       res.status(300).send('There was an error sending your message')
     }
     else {
