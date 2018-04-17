@@ -12,7 +12,7 @@ const smtpTransport = nodemailer.createTransport({
   }
 })
 
-router.post('/', (req, res, next) => {
+router.post('/forms', (req, res, next) => {
   smtpTransport.sendMail({
     from: req.body.email,
     to: process.env.NODEMAILER_USER,
