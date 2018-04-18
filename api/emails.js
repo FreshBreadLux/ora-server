@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const nodemailer = require('nodemailer')
+const sendinblue = require('nodemailer-sendinblue-transport')
 
 module.exports = router
 
@@ -12,15 +13,34 @@ const smtpTransport = nodemailer.createTransport({
   }
 })
 
+const sendInBlueTransport = nodemailer.createTransport(sendinblue({
+  apiKey: process.env.SENDINBLUE_API_KEY
+}))
+
 router.post('/forms', (req, res, next) => {
-  smtpTransport.sendMail({
-    from: req.body.email,
-    to: process.env.NODEMAILER_USER,
-    subject: `Website ${req.query.form} form: ${req.body.subject}`,
-    text: req.body.body
+  // smtpTransport.sendMail({
+  //   from: req.body.email,
+  //   to: process.env.NODEMAILER_USER,
+  //   subject: `Website ${req.query.form} form: ${req.body.subject}`,
+  //   text: req.body.body
+  // }, (err, info) => {
+  //   if (err) {
+  //     console.error(err)
+  //     res.status(300).send('There was an error sending your message')
+  //   }
+  //   else {
+  //     console.log('Message sent: ', info)
+  //     res.send('Thank you! Your message has been sent')
+  //   }
+  // })
+  sendInBlueTransport.sendMail({
+    id: 3,
+    to: req.body.email,
+    attr: { FIRSTNAME: 'Tester' }
   }, (err, info) => {
     if (err) {
-      console.error(err)
+      console.error('error: ', err)
+      console.log('There was an error sending the template')
       res.status(300).send('There was an error sending your message')
     }
     else {
