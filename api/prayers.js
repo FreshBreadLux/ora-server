@@ -13,11 +13,11 @@ const notificationQueues = {}
 
 // THE FUNCTION REGISTERNOTIFICATION HANDLES NOTIFICATION BATCHING
 async function registerNotification(updatedPrayer) {
-  const ONE_HOUR = 1000 * 60 * 2
+  const ONE_HALF_HOUR = 1000 * 60 * 30
   const prayerId = updatedPrayer.id
   if (notificationQueues[prayerId] && notificationQueues[prayerId].sentOne === true) {
     // IF A USER HAS RECENTLY RECEIVED ONE NOTIFICATION, CANCEL THE RESET AND
-    // QUEUE ANOTHER TO BE SENT IN AN HOUR
+    // QUEUE ANOTHER TO BE SENT IN A HALF HOUR
     clearTimeout(notificationQueues[prayerId].cancelReset)
     notificationQueues[prayerId] = {
       number: 1,
@@ -36,7 +36,7 @@ async function registerNotification(updatedPrayer) {
     const cancellationToken = setTimeout(async () => {
       await expo.sendPushNotificationAsync(notificationQueues[prayerId].pushNotification)
       notificationQueues[prayerId] = null
-    }, ONE_HOUR)
+    }, ONE_HALF_HOUR)
     notificationQueues[prayerId].cancelNotification = cancellationToken
   } else if (notificationQueues[prayerId]) {
     // IF THERE IS ALREADY A QUEUE OF NOTIFICATIONS, COMBINE THEM AND SET A
@@ -58,10 +58,10 @@ async function registerNotification(updatedPrayer) {
     const cancellationToken = setTimeout(async () => {
       await expo.sendPushNotificationAsync(notificationQueues[prayerId].pushNotification)
       notificationQueues[prayerId] = null
-    }, ONE_HOUR)
+    }, ONE_HALF_HOUR)
     notificationQueues[prayerId].cancelNotification = cancellationToken
   } else {
-    // IF THIS IS THE FIRST NOTIFICATION IN AN HOUR, SEND IT, SET THE STATUS,
+    // IF THIS IS THE FIRST NOTIFICATION IN A HALF HOUR, SEND IT, SET THE STATUS,
     // AND SET A TIMER TO RESET THE STATUS
     await expo.sendPushNotificationAsync({
       to: updatedPrayer.user.pushToken,
@@ -75,7 +75,7 @@ async function registerNotification(updatedPrayer) {
     notificationQueues[prayerId] = { sentOne: true }
     const cancellationToken = setTimeout(() => {
       notificationQueues[prayerId] = null
-    }, ONE_HOUR)
+    }, ONE_HALF_HOUR)
     notificationQueues[prayerId].cancelReset = cancellationToken
   }
 }
