@@ -36,6 +36,7 @@ router.post('/subscriptions', (req, res, next) => {
     .then(plan => {
       return User.findById(userId)
       .then(user => {
+        user.update({ angelInvestor: true })
         return Subscription.create(user.stripeCustomerId, plan.id)
       })
     })
@@ -76,7 +77,13 @@ router.delete('/subscriptions/:subscriptionId', (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     Subscription.delete(req.params.subscriptionId)
-    .then(result => res.send(result))
+    .then(result => {
+      res.send(result)
+      User.findOne({ where: {
+        stripeCustomerId: result.customer
+      }})
+      .then(user => user.update({ angelInvestor: false }))
+    })
     .catch(next)
   } catch (error) {
     console.error(error)

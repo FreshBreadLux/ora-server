@@ -51,7 +51,8 @@ const User = db.define('user', {
   },
   isAdmin: {
     type: Sequelize.BOOLEAN,
-    defaultValue: false
+    defaultValue: false,
+    allowNull: false
   },
   firstName: {
     type: Sequelize.STRING
@@ -77,6 +78,11 @@ const User = db.define('user', {
   investmentTotal: {
     type: Sequelize.INTEGER,
     defaultValue: 0
+  },
+  angelInvestor: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
   },
   // Unused as of version 1.0.1; may be used in later versions
   phoneNumber: {
