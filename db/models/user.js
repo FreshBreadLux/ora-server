@@ -26,6 +26,11 @@ const User = db.define('user', {
     defaultValue: 0,
     allowNull: false
   },
+  totalSubmitted: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false
+  },
   consecutiveDays: {
     type: Sequelize.INTEGER,
     defaultValue: 0,
@@ -86,7 +91,11 @@ const User = db.define('user', {
   unseenLevelUp: {
     type: Sequelize.BOOLEAN,
     defaultValue: false
-  }
+  },
+  notificationInterval: {
+    type: Sequelize.INTEGER,
+    defaultValue: 30
+  },
 })
 
 module.exports = User

@@ -147,12 +147,14 @@ router.put('/close/:prayerId', (req, res, next) => {
   .catch(next)
 })
 
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
-    Prayer.create(req.body)
-    .then(prayer => res.json(prayer))
-    .catch(next)
+    const prayer = await Prayer.create(req.body)
+    res.json(prayer)
+    const user = await User.findById(req.body.userId)
+    const totalSubmitted = user.totalSubmitted
+    user.update({ totalSubmitted: totalSubmitted + 1 })
   } catch (error) {
     console.error(error)
     res.status(400).send('You do not have sufficient authorization')
