@@ -74,7 +74,7 @@ router.put('/sendResetCode', async (req, res, next) => {
       from: process.env.NODEMAILER_USER,
       to: updatedUser.email,
       subject: 'Reset Your Password for Ora',
-      text: `Use code ${resetCode} to reset your password in Ora. This code will expire after one hour.`
+      text: `Use code ${resetCode} to reset your password in Ora.`
     }, (err, info) => {
       if (err) console.error(err)
       else console.log(`Reset code sent to ${updatedUser.email}; info: `, info)
