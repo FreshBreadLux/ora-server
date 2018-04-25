@@ -4,7 +4,6 @@ const Prayer = require('../db/models/prayer')
 const Update = require('../db/models/update')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
-const stripe = require('stripe')(process.env.STRIPE_API_KEY)
 
 module.exports = router
 
@@ -55,7 +54,8 @@ router.get('/:userId', (req, res, next) => {
       isAdmin: foundUser.isAdmin,
       firstName: foundUser.firstName,
       lastName: foundUser.lastName,
-      investmentTotal: foundUser.investmentTotal
+      investmentTotal: foundUser.investmentTotal,
+      oraMissionary: foundUser.oraMissionary
     }
     res.status(201).send(scrubbedUser)
   })
