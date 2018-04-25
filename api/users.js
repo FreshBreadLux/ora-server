@@ -57,7 +57,8 @@ router.get('/:userId', (req, res, next) => {
       investmentTotal: foundUser.investmentTotal,
       oraMissionary: foundUser.oraMissionary,
       city: foundUser.city,
-      state: foundUser.state
+      state: foundUser.state,
+      address: foundUser.address
     }
     res.status(201).send(scrubbedUser)
   })

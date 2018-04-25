@@ -128,7 +128,8 @@ router.put('/next', async (req, res, next) => {
       investmentTotal: foundUser.investmentTotal,
       oraMissionary: foundUser.oraMissionary,
       city: foundUser.city,
-      state: foundUser.state
+      state: foundUser.state,
+      address: foundUser.address
     }
     res.send({newView, updatedPrayer, scrubbedUser})
   } catch (err) {
