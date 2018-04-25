@@ -84,15 +84,20 @@ const User = db.define('user', {
     defaultValue: false,
     allowNull: false
   },
-  // Unused as of version 1.0.1; may be used in later versions
-  phoneNumber: {
-    type: Sequelize.INTEGER
+  oraMissionary: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
   },
   age: {
     type: Sequelize.INTEGER
   },
   gender: {
     type: Sequelize.ENUM('Male', 'Female')
+  },
+  // Unused as of version 1.0.1; may be used in later versions
+  phoneNumber: {
+    type: Sequelize.INTEGER
   },
   unseenLevelUp: {
     type: Sequelize.BOOLEAN,
