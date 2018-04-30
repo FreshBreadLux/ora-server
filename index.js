@@ -14,6 +14,7 @@ const PORT = process.env.PORT || 8080
 const app = express()
 const socketio = require('socket.io')
 module.exports = app
+require('newrelic')
 
 if (process.env.NODE_ENV !== 'production') require('./secrets')
 
