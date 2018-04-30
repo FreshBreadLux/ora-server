@@ -30,13 +30,18 @@ function generateResetCode() {
 }
 
 router.get('/', (req, res, next) => {
+  console.log('QUERYING WITH EMAIL: ', req.query.email)
   if (req.query.email) {
     User.findOne({ where: { email: req.query.email }})
     .then(user => {
+      console.log('FOUND USER: ', user)
       if (user) res.send({id: user.id, stripeCustomerId: !!user.stripeCustomerId})
       else res.send({user: 'email does not exist'})
     })
-    .catch(console.error)
+    .catch(error => {
+      console.log('ERROR: ', error)
+      res.send({user: 'there was an error'})
+    })
   } else {
     res.send({user: 'please send a valid email'})
   }
@@ -129,6 +134,8 @@ router.put('/:userId', (req, res, next) => {
 })
 
 router.get('/:userId/prayers', (req, res, next) => {
+  console.log('GETTING PRAYERS WITH USERID: ', req.params.userId)
+  console.log('This is what null looks like: ', null)
   if (req.params.userId && req.params.userId !== null) {
     Prayer.findAll({
       where: {
@@ -148,6 +155,8 @@ router.get('/:userId/prayers', (req, res, next) => {
 })
 
 router.get('/:userId/follows', (req, res, next) => {
+  console.log('GETTING FOLLOWS WITH USERID: ', req.params.userId)
+  console.log('This is what null looks like: ', null)
   if (req.params.userId && req.params.userId !== null) {
     User.findById(req.params.userId)
     .then(foundUser => foundUser.getFollowed({
@@ -179,6 +188,7 @@ router.get('/:userId/views', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
+  console.log('HIT POST API/USERS')
   if (!req.body.email || !req.body.password) {
     return res.status(400).send('You must send an email and password')
   }
