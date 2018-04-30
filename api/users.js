@@ -34,7 +34,6 @@ router.get('/', (req, res, next) => {
   if (req.query.email) {
     User.findOne({ where: { email: req.query.email }})
     .then(user => {
-      console.log('FOUND USER: ', user)
       if (user) return res.send({id: user.id, stripeCustomerId: !!user.stripeCustomerId})
       else return res.send({user: 'email does not exist'})
     })
@@ -140,7 +139,6 @@ router.put('/:userId', (req, res, next) => {
 
 router.get('/:userId/prayers', (req, res, next) => {
   console.log('GETTING PRAYERS WITH USERID: ', req.params.userId)
-  console.log('This is what null looks like: ', null)
   if (req.params.userId && req.params.userId !== 'null') {
     console.log('MADE IT PAST THE CONDITIONAL LOGIC IN PRAYERS WITH USERID: ', req.params.userId)
     console.log('req.params.userId === null: ', req.params.userId === null)
@@ -164,7 +162,6 @@ router.get('/:userId/prayers', (req, res, next) => {
 
 router.get('/:userId/follows', (req, res, next) => {
   console.log('GETTING FOLLOWS WITH USERID: ', req.params.userId)
-  console.log('This is what null looks like: ', null)
   if (req.params.userId && req.params.userId !== 'null') {
     console.log('MADE IT PAST THE CONDITIONAL LOGIC IN FOLLOWS WITH USERID: ', req.params.userId)
     console.log('req.params.userId === null: ', req.params.userId === null)
@@ -199,7 +196,6 @@ router.get('/:userId/views', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-  console.log('HIT POST API/USERS')
   if (!req.body.email || !req.body.password) {
     return res.status(400).send('You must send an email and password')
   }
