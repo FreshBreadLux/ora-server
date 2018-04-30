@@ -166,12 +166,14 @@ router.post('/', (req, res, next) => {
   if (!req.body.email || !req.body.password) {
     return res.status(400).send('You must send an email and password')
   }
+  console.log('NOTICE: ', req.body.email, 'is signing up!')
   User.create(req.body)
   .then(user => {
     res.status(201).send({
       userId: user.id,
       jwToken: createToken(user),
     })
+    console.log('They signed up!')
   })
   .catch(error => {
     if (error.errors[0].message === 'Validation isEmail on email failed') {
