@@ -141,7 +141,7 @@ router.put('/:userId', (req, res, next) => {
 router.get('/:userId/prayers', (req, res, next) => {
   console.log('GETTING PRAYERS WITH USERID: ', req.params.userId)
   console.log('This is what null looks like: ', null)
-  if (req.params.userId && req.params.userId !== null) {
+  if (req.params.userId && req.params.userId !== 'null') {
     console.log('MADE IT PAST THE CONDITIONAL LOGIC IN PRAYERS WITH USERID: ', req.params.userId)
     console.log('req.params.userId === null: ', req.params.userId === null)
     console.log('req.params.userId === (the string) null: ', req.params.userId === 'null')
@@ -165,7 +165,7 @@ router.get('/:userId/prayers', (req, res, next) => {
 router.get('/:userId/follows', (req, res, next) => {
   console.log('GETTING FOLLOWS WITH USERID: ', req.params.userId)
   console.log('This is what null looks like: ', null)
-  if (req.params.userId && req.params.userId !== null) {
+  if (req.params.userId && req.params.userId !== 'null') {
     console.log('MADE IT PAST THE CONDITIONAL LOGIC IN FOLLOWS WITH USERID: ', req.params.userId)
     console.log('req.params.userId === null: ', req.params.userId === null)
     console.log('req.params.userId === (the string) null: ', req.params.userId === 'null')
@@ -185,7 +185,7 @@ router.get('/:userId/follows', (req, res, next) => {
 })
 
 router.get('/:userId/views', (req, res, next) => {
-  if (req.params.userId && req.params.userId !== null) {
+  if (req.params.userId && req.params.userId !== 'null') {
     User.findById(req.params.userId)
     .then(foundUser => foundUser.getViewed())
     .then(views => {
