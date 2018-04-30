@@ -59,7 +59,8 @@ router.get('/:userId', (req, res, next) => {
         oraMissionary: foundUser.oraMissionary,
         city: foundUser.city,
         state: foundUser.state,
-        address: foundUser.address
+        address: foundUser.address,
+        notificationInterval: 30
       }
       res.status(201).send(scrubbedUser)
     })
