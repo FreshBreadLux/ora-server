@@ -110,27 +110,31 @@ router.put('/resetPassword', async (req, res, next) => {
 })
 
 router.put('/:userId', (req, res, next) => {
-  User.findById(req.params.userId)
-  .then(foundUser => foundUser.update(req.body))
-  .then(updatedUser => {
-    const scrubbedUser = {
-      email: updatedUser.email,
-      id: updatedUser.id,
-      totalPrayers: updatedUser.totalPrayers,
-      theme: updatedUser.theme,
-      consecutiveDays: updatedUser.consecutiveDays,
-      isAdmin: updatedUser.isAdmin,
-      firstName: updatedUser.firstName,
-      lastName: updatedUser.lastName,
-      investmentTotal: updatedUser.investmentTotal,
-      oraMissionary: updatedUser.oraMissionary,
-      city: updatedUser.city,
-      state: updatedUser.state,
-      address: updatedUser.address
-    }
-    return res.status(201).send(scrubbedUser)
-  })
-  .catch(console.error)
+  if (req.params.userId) {
+    User.findById(req.params.userId)
+    .then(foundUser => foundUser.update(req.body))
+    .then(updatedUser => {
+      const scrubbedUser = {
+        email: updatedUser.email,
+        id: updatedUser.id,
+        totalPrayers: updatedUser.totalPrayers,
+        theme: updatedUser.theme,
+        consecutiveDays: updatedUser.consecutiveDays,
+        isAdmin: updatedUser.isAdmin,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        investmentTotal: updatedUser.investmentTotal,
+        oraMissionary: updatedUser.oraMissionary,
+        city: updatedUser.city,
+        state: updatedUser.state,
+        address: updatedUser.address
+      }
+      return res.status(201).send(scrubbedUser)
+    })
+    .catch(console.error)
+  } else {
+    return res.send('You must send a valid userId')
+  }
 })
 
 router.get('/:userId/prayers', (req, res, next) => {
