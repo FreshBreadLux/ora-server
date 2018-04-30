@@ -60,7 +60,6 @@ router.get('/:userId', (req, res, next) => {
         city: foundUser.city,
         state: foundUser.state,
         address: foundUser.address,
-        notificationInterval: 30
       }
       res.status(201).send(scrubbedUser)
     })
@@ -196,6 +195,7 @@ router.post('/', (req, res, next) => {
     isAdmin: false,
     angelInvestor: false,
     oraMissionary: false,
+    notificationInterval: 30
   })
   .then(user => {
     res.status(201).send({
