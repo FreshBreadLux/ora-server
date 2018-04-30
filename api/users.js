@@ -35,15 +35,15 @@ router.get('/', (req, res, next) => {
     User.findOne({ where: { email: req.query.email }})
     .then(user => {
       console.log('FOUND USER: ', user)
-      if (user) res.send({id: user.id, stripeCustomerId: !!user.stripeCustomerId})
-      else res.send({user: 'email does not exist'})
+      if (user) return res.send({id: user.id, stripeCustomerId: !!user.stripeCustomerId})
+      else return res.send({user: 'email does not exist'})
     })
     .catch(error => {
       console.log('ERROR: ', error)
-      res.send({user: 'there was an error'})
+      return res.send({user: 'there was an error'})
     })
   } else {
-    res.send({user: 'please send a valid email'})
+    return res.send({user: 'please send a valid email'})
   }
 })
 
@@ -66,11 +66,11 @@ router.get('/:userId', (req, res, next) => {
         state: foundUser.state,
         address: foundUser.address,
       }
-      res.status(201).send(scrubbedUser)
+      return res.status(201).send(scrubbedUser)
     })
     .catch(console.error)
   } else {
-    res.send({user: 'please send a valid userId'})
+    return res.send({user: 'please send a valid userId'})
   }
 })
 
@@ -78,7 +78,7 @@ router.put('/sendResetCode', async (req, res, next) => {
   if (!req.body.email) return res.status(400).send('You must send an email')
   const foundUser = await User.findOne({where: {email: req.body.email}})
   if (!foundUser) {
-    res.status(401).send('That email is incorrect')
+    return res.status(401).send('That email is incorrect')
   } else {
     const resetCode = generateResetCode()
     const updatedUser = await foundUser.update({resetCode})
@@ -91,7 +91,7 @@ router.put('/sendResetCode', async (req, res, next) => {
       if (err) console.error(err)
       else console.log(`Reset code sent to ${updatedUser.email}; info: `, info)
     })
-    res.send('Reset code successfully sent')
+    return res.send('Reset code successfully sent')
   }
 })
 
@@ -99,13 +99,13 @@ router.put('/resetPassword', async (req, res, next) => {
   if (!req.body.resetCode || !req.body.password) return res.status(400).send('You must send a reset code and password')
   const foundUser = await User.findOne({where: {resetCode: req.body.resetCode}})
   if (!foundUser) {
-    res.status(401).send('That reset code is incorrect')
+    return res.status(401).send('That reset code is incorrect')
   } else {
     await foundUser.update({
       resetCode: null,
       password: req.body.password
     })
-    res.send('Password successfully reset')
+    return res.send('Password successfully reset')
   }
 })
 
@@ -128,7 +128,7 @@ router.put('/:userId', (req, res, next) => {
       state: updatedUser.state,
       address: updatedUser.address
     }
-    res.status(201).send(scrubbedUser)
+    return res.status(201).send(scrubbedUser)
   })
   .catch(console.error)
 })
@@ -137,6 +137,8 @@ router.get('/:userId/prayers', (req, res, next) => {
   console.log('GETTING PRAYERS WITH USERID: ', req.params.userId)
   console.log('This is what null looks like: ', null)
   if (req.params.userId && req.params.userId !== null) {
+    console.log('MADE IT PAST THE CONDITIONAL LOGIC IN PRAYERS WITH USERID: ', req.params.userId)
+    console.log('req.params.userId === null: ', req.params.userId === null)
     Prayer.findAll({
       where: {
         userId: req.params.userId
@@ -150,7 +152,7 @@ router.get('/:userId/prayers', (req, res, next) => {
     .then(prayers => res.status(201).send(prayers))
     .catch(console.error)
   } else {
-    res.send('You must include a valid userId')
+    return res.send('You must include a valid userId')
   }
 })
 
@@ -158,6 +160,8 @@ router.get('/:userId/follows', (req, res, next) => {
   console.log('GETTING FOLLOWS WITH USERID: ', req.params.userId)
   console.log('This is what null looks like: ', null)
   if (req.params.userId && req.params.userId !== null) {
+    console.log('MADE IT PAST THE CONDITIONAL LOGIC IN FOLLOWS WITH USERID: ', req.params.userId)
+    console.log('req.params.userId === null: ', req.params.userId === null)
     User.findById(req.params.userId)
     .then(foundUser => foundUser.getFollowed({
       include: [Update],
@@ -169,7 +173,7 @@ router.get('/:userId/follows', (req, res, next) => {
     .then(follows => res.send(follows))
     .catch(console.error)
   } else {
-    res.send('You must include a valid userId')
+    return res.send('You must include a valid userId')
   }
 })
 
@@ -179,7 +183,7 @@ router.get('/:userId/views', (req, res, next) => {
     .then(foundUser => foundUser.getViewed())
     .then(views => {
       const prayerIdsOfViews = views.map(view => view.id)
-      res.send(prayerIdsOfViews)
+      return res.send(prayerIdsOfViews)
     })
     .catch(console.error)
   } else {
@@ -208,11 +212,10 @@ router.post('/', (req, res, next) => {
     notificationInterval: 30
   })
   .then(user => {
-    res.status(201).send({
+    return res.status(201).send({
       userId: user.id,
       jwToken: createToken(user),
     })
-    console.log('They signed up!')
   })
   .catch(error => {
     if (error.errors[0].message === 'Validation isEmail on email failed') {
@@ -232,9 +235,9 @@ router.post('/sessions', (req, res, next) => {
   User.findOne({where: {email: req.body.email}})
   .then(foundUser => {
     if (!foundUser || !foundUser.correctPassword(req.body.password)) {
-      res.status(401).send('The email or password is incorrect')
+      return res.status(401).send('The email or password is incorrect')
     } else {
-      res.status(201).send({
+      return res.status(201).send({
         userId: foundUser.id,
         jwToken: createToken(foundUser)
       })
