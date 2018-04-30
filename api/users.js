@@ -167,7 +167,19 @@ router.post('/', (req, res, next) => {
     return res.status(400).send('You must send an email and password')
   }
   console.log('NOTICE: ', req.body.email, 'is signing up!')
-  User.create(req.body)
+  User.create({
+    email: req.body.email,
+    password: req.body.password,
+    pushToken: req.body.pushToken,
+    totalPrayers: 0,
+    totalSubmitted: 0,
+    consecutiveDays: 0,
+    prayedToday: false,
+    theme: 'Rome',
+    isAdmin: false,
+    angelInvestor: false,
+    oraMissionary: false,
+  })
   .then(user => {
     res.status(201).send({
       userId: user.id,
