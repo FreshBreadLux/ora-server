@@ -111,7 +111,7 @@ router.put('/resetPassword', async (req, res, next) => {
 })
 
 router.put('/:userId', (req, res, next) => {
-  if (req.params.userId) {
+  if (req.params.userId && req.params.userId !== 'null') {
     User.findById(req.params.userId)
     .then(foundUser => foundUser.update(req.body))
     .then(updatedUser => {
