@@ -129,7 +129,7 @@ router.put('/:userId', (req, res, next) => {
 })
 
 router.get('/:userId/prayers', (req, res, next) => {
-  if (req.params.userId) {
+  if (req.params.userId && req.params.userId !== null) {
     Prayer.findAll({
       where: {
         userId: req.params.userId
@@ -148,7 +148,7 @@ router.get('/:userId/prayers', (req, res, next) => {
 })
 
 router.get('/:userId/follows', (req, res, next) => {
-  if (req.params.userId) {
+  if (req.params.userId && req.params.userId !== null) {
     User.findById(req.params.userId)
     .then(foundUser => foundUser.getFollowed({
       include: [Update],
@@ -165,7 +165,7 @@ router.get('/:userId/follows', (req, res, next) => {
 })
 
 router.get('/:userId/views', (req, res, next) => {
-  if (req.params.userId) {
+  if (req.params.userId && req.params.userId !== null) {
     User.findById(req.params.userId)
     .then(foundUser => foundUser.getViewed())
     .then(views => {
