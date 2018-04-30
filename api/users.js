@@ -43,26 +43,30 @@ router.get('/', (req, res, next) => {
 })
 
 router.get('/:userId', (req, res, next) => {
-  User.findById(req.params.userId)
-  .then(foundUser => {
-    const scrubbedUser = {
-      email: foundUser.email,
-      id: foundUser.id,
-      totalPrayers: foundUser.totalPrayers,
-      theme: foundUser.theme,
-      consecutiveDays: foundUser.consecutiveDays,
-      isAdmin: foundUser.isAdmin,
-      firstName: foundUser.firstName,
-      lastName: foundUser.lastName,
-      investmentTotal: foundUser.investmentTotal,
-      oraMissionary: foundUser.oraMissionary,
-      city: foundUser.city,
-      state: foundUser.state,
-      address: foundUser.address
-    }
-    res.status(201).send(scrubbedUser)
-  })
-  .catch(console.error)
+  if (req.params.userId) {
+    User.findById(req.params.userId)
+    .then(foundUser => {
+      const scrubbedUser = {
+        email: foundUser.email,
+        id: foundUser.id,
+        totalPrayers: foundUser.totalPrayers,
+        theme: foundUser.theme,
+        consecutiveDays: foundUser.consecutiveDays,
+        isAdmin: foundUser.isAdmin,
+        firstName: foundUser.firstName,
+        lastName: foundUser.lastName,
+        investmentTotal: foundUser.investmentTotal,
+        oraMissionary: foundUser.oraMissionary,
+        city: foundUser.city,
+        state: foundUser.state,
+        address: foundUser.address
+      }
+      res.status(201).send(scrubbedUser)
+    })
+    .catch(console.error)
+  } else {
+    res.send({user: 'please send a valid userId'})
+  }
 })
 
 router.put('/sendResetCode', async (req, res, next) => {
@@ -125,41 +129,53 @@ router.put('/:userId', (req, res, next) => {
 })
 
 router.get('/:userId/prayers', (req, res, next) => {
-  Prayer.findAll({
-    where: {
-      userId: req.params.userId
-    },
-    include: [{ model: Update }],
-    order: [
-      ['createdAt', 'DESC'],
-      [{model: Update}, 'createdAt']
-    ]
-  })
-  .then(prayers => res.status(201).send(prayers))
-  .catch(console.error)
+  if (req.params.userId) {
+    Prayer.findAll({
+      where: {
+        userId: req.params.userId
+      },
+      include: [{ model: Update }],
+      order: [
+        ['createdAt', 'DESC'],
+        [{model: Update}, 'createdAt']
+      ]
+    })
+    .then(prayers => res.status(201).send(prayers))
+    .catch(console.error)
+  } else {
+    res.send('You must include a valid userId')
+  }
 })
 
 router.get('/:userId/follows', (req, res, next) => {
-  User.findById(req.params.userId)
-  .then(foundUser => foundUser.getFollowed({
-    include: [Update],
-    order: [
-      ['createdAt', 'DESC'],
-      [{model: Update}, 'createdAt']
-    ]
-  }))
-  .then(follows => res.send(follows))
-  .catch(console.error)
+  if (req.params.userId) {
+    User.findById(req.params.userId)
+    .then(foundUser => foundUser.getFollowed({
+      include: [Update],
+      order: [
+        ['createdAt', 'DESC'],
+        [{model: Update}, 'createdAt']
+      ]
+    }))
+    .then(follows => res.send(follows))
+    .catch(console.error)
+  } else {
+    res.send('You must include a valid userId')
+  }
 })
 
 router.get('/:userId/views', (req, res, next) => {
-  User.findById(req.params.userId)
-  .then(foundUser => foundUser.getViewed())
-  .then(views => {
-    const prayerIdsOfViews = views.map(view => view.id)
-    res.send(prayerIdsOfViews)
-  })
-  .catch(console.error)
+  if (req.params.userId) {
+    User.findById(req.params.userId)
+    .then(foundUser => foundUser.getViewed())
+    .then(views => {
+      const prayerIdsOfViews = views.map(view => view.id)
+      res.send(prayerIdsOfViews)
+    })
+    .catch(console.error)
+  } else {
+    res.send('You must include a valid userId')
+  }
 })
 
 router.post('/', (req, res, next) => {
