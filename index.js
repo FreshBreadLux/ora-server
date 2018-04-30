@@ -1,3 +1,4 @@
+require('newrelic')
 const path = require('path')
 const express = require('express')
 const morgan = require('morgan')
@@ -14,7 +15,6 @@ const PORT = process.env.PORT || 8080
 const app = express()
 const socketio = require('socket.io')
 module.exports = app
-require('newrelic')
 
 if (process.env.NODE_ENV !== 'production') require('./secrets')
 
