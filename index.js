@@ -56,7 +56,6 @@ const createApp = () => {
   app.use('/api', require('./api'))
   app.get('/', (req, res, next) => {
     res.send('Welcome to Ora')
-    .catch(console.error)
   })
 
   // static file-serving middleware
