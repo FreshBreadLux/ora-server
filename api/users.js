@@ -39,10 +39,10 @@ router.get('/', (req, res, next) => {
     })
     .catch(error => {
       console.log('ERROR: ', error)
-      return res.send({user: 'there was an error'})
+      return res.status(400).send({user: 'there was an error'})
     })
   } else {
-    return res.send({user: 'please send a valid email'})
+    return res.status(400).send('You must include a valid email')
   }
 })
 
@@ -68,51 +68,61 @@ router.get('/:userId', (req, res, next) => {
       }
       return res.status(201).send(scrubbedUser)
     })
-    .catch(console.error)
+    .catch(next)
   } else {
-    return res.send({user: 'please send a valid userId'})
+    return res.status(400).send('You must include a valid userId')
   }
 })
 
 router.put('/sendResetCode', async (req, res, next) => {
-  if (!req.body.email) return res.status(400).send('You must send an email')
-  const foundUser = await User.findOne({where: {email: req.body.email}})
-  if (!foundUser) {
-    return res.status(401).send('That email is incorrect')
-  } else {
-    const resetCode = generateResetCode()
-    const updatedUser = await foundUser.update({resetCode})
-    await smtpTransport.sendMail({
-      from: process.env.NODEMAILER_USER,
-      to: updatedUser.email,
-      subject: 'Reset Your Password for Ora',
-      text: `Use code ${resetCode} to reset your password in Ora.`
-    }, (err, info) => {
-      if (err) console.error(err)
-      else console.log(`Reset code sent to ${updatedUser.email}; info: `, info)
-    })
-    return res.send('Reset code successfully sent')
+  try {
+    if (!req.body.email) return res.status(400).send('You must send an email')
+    const foundUser = await User.findOne({where: {email: req.body.email}})
+    if (!foundUser) {
+      return res.status(401).send('That email is incorrect')
+    } else {
+      const resetCode = generateResetCode()
+      const updatedUser = await foundUser.update({resetCode})
+      smtpTransport.sendMail({
+        from: process.env.NODEMAILER_USER,
+        to: updatedUser.email,
+        subject: 'Reset Your Password for Ora',
+        text: `Use code ${resetCode} to reset your password in Ora.`
+      }, (err, info) => {
+        if (err) {
+          return next(err)
+        }
+        console.log(`Reset code sent to ${updatedUser.email}; info: `, info)
+        return res.send('Reset code successfully sent')
+      })
+    }
+  } catch (error) {
+    next(error)
   }
 })
 
 router.put('/resetPassword', async (req, res, next) => {
-  if (!req.body.resetCode || !req.body.password) return res.status(400).send('You must send a reset code and password')
-  const foundUser = await User.findOne({where: {resetCode: req.body.resetCode}})
-  if (!foundUser) {
-    return res.status(401).send('That reset code is incorrect')
-  } else {
-    await foundUser.update({
-      resetCode: null,
-      password: req.body.password
-    })
-    return res.send('Password successfully reset')
+  try {
+    if (!req.body.resetCode || !req.body.password) return res.status(400).send('You must send a reset code and password')
+    const foundUser = await User.findOne({where: {resetCode: req.body.resetCode}})
+    if (!foundUser) {
+      return res.status(401).send('That reset code is incorrect')
+    } else {
+      await foundUser.update({
+        resetCode: null,
+        password: req.body.password
+      })
+      return res.send('Password successfully reset')
+    }
+  } catch (error) {
+    next(error)
   }
 })
 
 router.put('/:userId', (req, res, next) => {
   console.log('HIT PUT USERS/:USERID')
   console.log('REQ.BODY: ', req.body)
-  if (req.params.userId && req.params.userId !== 'null') {
+  if (req.params.userId) {
     User.findById(req.params.userId)
     .then(foundUser => foundUser.update(req.body))
     .then(updatedUser => {
@@ -133,9 +143,9 @@ router.put('/:userId', (req, res, next) => {
       }
       return res.status(201).send(scrubbedUser)
     })
-    .catch(console.error)
+    .catch(next)
   } else {
-    return res.send('You must send a valid userId')
+    return res.status(400).send('You must include a valid userId')
   }
 })
 
@@ -143,7 +153,7 @@ router.get('/:userId/prayers', (req, res, next) => {
   console.log('GETTING PRAYERS WITH USERID: ', req.params.userId)
   console.log('req.params.userId === null: ', req.params.userId === null)
   console.log('req.params.userId === (the string) null: ', req.params.userId === 'null')
-  if (req.params.userId && req.params.userId !== 'null') {
+  if (req.params.userId) {
     console.log('MADE IT PAST THE CONDITIONAL LOGIC IN PRAYERS WITH USERID: ', req.params.userId)
     Prayer.findAll({
       where: {
@@ -156,9 +166,9 @@ router.get('/:userId/prayers', (req, res, next) => {
       ]
     })
     .then(prayers => res.status(201).send(prayers))
-    .catch(console.error)
+    .catch(next)
   } else {
-    return res.send('You must include a valid userId')
+    return res.status(400).send('You must include a valid userId')
   }
 })
 
@@ -166,7 +176,7 @@ router.get('/:userId/follows', (req, res, next) => {
   console.log('GETTING FOLLOWS WITH USERID: ', req.params.userId)
   console.log('req.params.userId === null: ', req.params.userId === null)
   console.log('req.params.userId === (the string) null: ', req.params.userId === 'null')
-  if (req.params.userId && req.params.userId !== 'null') {
+  if (req.params.userId) {
     console.log('MADE IT PAST THE CONDITIONAL LOGIC IN FOLLOWS WITH USERID: ', req.params.userId)
     User.findById(req.params.userId)
     .then(foundUser => foundUser.getFollowed({
@@ -177,9 +187,9 @@ router.get('/:userId/follows', (req, res, next) => {
       ]
     }))
     .then(follows => res.send(follows))
-    .catch(console.error)
+    .catch(next)
   } else {
-    return res.send('You must include a valid userId')
+    return res.status(400).send('You must include a valid userId')
   }
 })
 
@@ -191,9 +201,9 @@ router.get('/:userId/views', (req, res, next) => {
       const prayerIdsOfViews = views.map(view => view.id)
       return res.send(prayerIdsOfViews)
     })
-    .catch(console.error)
+    .catch(next)
   } else {
-    res.send('You must include a valid userId')
+    return res.status(400).send('You must include a valid userId')
   }
 })
 
@@ -229,7 +239,7 @@ router.post('/', (req, res, next) => {
     if (error.errors[0].message === 'email must be unique') {
       return res.status(406).send()
     }
-    console.error('error.errors[0].message: ', error.errors[0].message)
+    return next(error)
   })
 })
 
@@ -248,5 +258,5 @@ router.post('/sessions', (req, res, next) => {
       })
     }
   })
-  .catch(console.error)
+  .catch(next)
 })

@@ -54,6 +54,7 @@ router.put('/subscriptions/:subscriptionId', (req, res, next) => {
     Plan.findOrCreate(req.body.amount)
     .then(plan => Subscription.updatePlan(req.params.subscriptionId, plan.id))
     .then(updatedSubscription => res.send(updatedSubscription))
+    .catch(next)
   } catch (error) {
     console.error(error)
     res.status(400).send('You do not have sufficient authorization')

@@ -25,7 +25,7 @@ router.post('/forms', (req, res, next) => {
     }
     else {
       console.log('Message sent: ', info)
-      res.send('Thank you! Your message has been sent')
+      res.status(200).send('Thank you! Your message has been sent')
     }
   })
 })
@@ -43,7 +43,7 @@ router.post('/donorSignup', (req, res, next) => {
     }
     else {
       console.log('Message sent: ', info)
-      res.send('Thank you! Your message has been sent')
+      res.status(200).send('Thank you! Your message has been sent')
     }
   })
 })
