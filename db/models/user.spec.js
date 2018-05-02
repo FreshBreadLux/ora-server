@@ -1,7 +1,6 @@
 const { expect } = require('chai')
 const db = require('../index')
 const User = db.models.user
-const Prayer = db.models.prayer
 
 describe('User model', () => {
   before('Await database sync', () => db.sync({force: true}))

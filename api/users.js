@@ -39,7 +39,7 @@ router.get('/', (req, res, next) => {
     })
     .catch(error => {
       console.log('ERROR: ', error)
-      return res.status(400).send({user: 'there was an error'})
+      return res.status(500).send({user: 'there was an error'})
     })
   } else {
     return res.status(400).send('You must include a valid email')
