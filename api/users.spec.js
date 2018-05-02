@@ -8,24 +8,13 @@ describe('User api', () => {
   before('Await database sync', () => db.sync({force: true}))
   afterEach('Clear the tables', () => db.truncate({ cascade: true }))
 
-  let users, user
+  let users
   beforeEach('Build a user', async () => {
     users = await User.bulkCreate([
-      {
-        email: 'test1@email.com',
-        password: 'one'
-      },
-      {
-        email: 'test2@email.com',
-        password: 'two'
-      },
-      {
-        email: 'test3@email.com',
-        password: 'three'
-      }
-    ], {
-      returning: true
-    })
+      {email: 'test1@email.com', password: 'one'},
+      {email: 'test2@email.com', password: 'two'},
+      {email: 'test3@email.com', password: 'three'}
+    ], {returning: true})
   })
 
   describe('GET /', () => {
