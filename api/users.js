@@ -89,9 +89,7 @@ router.put('/sendResetCode', async (req, res, next) => {
         subject: 'Reset Your Password for Ora',
         text: `Use code ${resetCode} to reset your password in Ora.`
       }, (err, info) => {
-        if (err) {
-          return next(err)
-        }
+        if (err) return next(err)
         console.log(`Reset code sent to ${updatedUser.email}; info: `, info)
         return res.send('Reset code successfully sent')
       })
@@ -165,7 +163,7 @@ router.get('/:userId/prayers', (req, res, next) => {
         [{model: Update}, 'createdAt']
       ]
     })
-    .then(prayers => res.status(201).send(prayers))
+    .then(prayers => res.send(prayers))
     .catch(next)
   } else {
     return res.status(400).send('You must include a valid userId')
@@ -194,7 +192,7 @@ router.get('/:userId/follows', (req, res, next) => {
 })
 
 router.get('/:userId/views', (req, res, next) => {
-  if (req.params.userId && req.params.userId !== 'null') {
+  if (req.params.userId) {
     User.findById(req.params.userId)
     .then(foundUser => foundUser.getViewed())
     .then(views => {

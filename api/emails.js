@@ -21,12 +21,10 @@ router.post('/forms', (req, res, next) => {
   }, (err, info) => {
     if (err) {
       console.error(err)
-      res.status(300).send('There was an error sending your message')
+      return res.status(300).send('There was an error sending your message')
     }
-    else {
-      console.log('Message sent: ', info)
-      res.status(200).send('Thank you! Your message has been sent')
-    }
+    console.log('Message sent: ', info)
+    res.status(200).send('Thank you! Your message has been sent')
   })
 })
 
@@ -39,11 +37,9 @@ router.post('/donorSignup', (req, res, next) => {
     if (err) {
       console.error('error: ', err)
       console.log('There was an error sending the template')
-      res.status(300).send('There was an error sending your message')
+      return res.status(300).send('There was an error sending your message')
     }
-    else {
-      console.log('Message sent: ', info)
-      res.status(200).send('Thank you! Your message has been sent')
-    }
+    console.log('Message sent: ', info)
+    res.status(200).send('Thank you! Your message has been sent')
   })
 })

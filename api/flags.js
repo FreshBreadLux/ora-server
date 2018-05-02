@@ -23,8 +23,8 @@ router.post('/', (req, res, next) => {
       subject: 'New Flag in Ora',
       text: `User ${newFlag.flaggerId} just flagged prayer ${newFlag.flaggedId}. Check the data base for more details, and take appropriate action.`
     }, (err, info) => {
-      if (err) console.error(err)
-      else console.log('Flag email sent: ', info.response)
+      if (err) return next(err)
+      console.log('Flag email sent: ', info.response)
     })
   })
   .catch(next)
