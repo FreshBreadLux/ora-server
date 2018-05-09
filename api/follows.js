@@ -70,6 +70,8 @@ router.put('/notify/followedId/:followedId', async (req, res, next) => {
       console.error(`${prayer.user.pushToken} is not valid`)
       res.status(201).send(prayer)
     }
+    const follower = await User.findOne({ where: { id: req.body.followerId } })
+    follower.update({ prayedToday: true })
   } catch (err) {
     next(err)
   }
