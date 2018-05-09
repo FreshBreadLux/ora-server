@@ -73,6 +73,7 @@ router.put('/notify/followedId/:followedId', async (req, res, next) => {
     if (req.body.followerId) {
       const follower = await User.findById(req.body.followerId)
       follower.update({ prayedToday: true })
+      console.log('FOLLOWER WITH ID:', follower.id, 'WAS UPDATED TO PRAYEDTODAY: TRUE')
     }
   } catch (err) {
     next(err)
