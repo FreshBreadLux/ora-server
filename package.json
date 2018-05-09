@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "DATABASE_URL=postgres://localhost:5432/ora-test mocha 'api/**/*.spec.js' 'db/**/*.spec.js' 'utils/**/*.spec.js'",
+    "test-watch": "npm test -- --watch",
     "seed": "node seed.js",
     "update-consecutive": "node scheduler.js"
   },
@@ -39,5 +40,10 @@
     "sequelize": "^4.37.6",
     "socket.io": "^2.1.0",
     "stripe": "^5.8.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.1.1",
+    "supertest": "^3.0.0"
   }
 }
