@@ -106,6 +106,7 @@ router.get('/charges', (req, res, next) => {
 })
 
 router.post('/webhook', (req, res, next) => {
+  console.log('HIT STRIPE WEBHOOK WITH REQ.BODY:', req.body)
   const { amount, customer } = req.body.data.object
   User.findOne({where: {stripeCustomerId: customer}})
   .then(user => user.update({investmentTotal: user.investmentTotal + amount}))
