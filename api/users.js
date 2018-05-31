@@ -242,6 +242,7 @@ router.post('/', (req, res, next) => {
 })
 
 router.post('/sessions', (req, res, next) => {
+  console.log('POSTING TO /SESSIONS WITH REQ.BODY:', req.body)
   if (!req.body.email || !req.body.password) {
     return res.status(400).send('You must send an email and password')
   }
@@ -250,6 +251,7 @@ router.post('/sessions', (req, res, next) => {
     if (!foundUser || !foundUser.correctPassword(req.body.password)) {
       return res.status(401).send('The email or password is incorrect')
     } else {
+      console.log('Found user:', foundUser)
       return res.status(201).send({
         userId: foundUser.id,
         jwToken: createToken(foundUser)

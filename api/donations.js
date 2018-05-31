@@ -12,7 +12,10 @@ router.post('/customers', (req, res, next) => {
   console.log('HIT POST /CUSTOMERS WITH REQ.BODY:', req.body)
   const { email, token } = req.body
   Customer.create(email, token)
-  .then(customer => res.send(customer))
+  .then(customer => {
+    console.log('Created Customer:', customer)
+    res.send(customer)
+  })
   .catch(next)
 })
 
