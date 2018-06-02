@@ -33,6 +33,7 @@ router.post('/charges', (req, res, next) => {
 })
 
 router.post('/subscriptions', (req, res, next) => {
+  console.log('POSTING TO DONATIONS/SUBSCRIPTIONS')
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     const { userId, amount } = req.body
@@ -40,6 +41,7 @@ router.post('/subscriptions', (req, res, next) => {
     .then(plan => {
       return User.findById(userId)
       .then(user => {
+        console.log('FOUND USER:', user)
         user.update({ angelInvestor: true })
         return Subscription.create(user.stripeCustomerId, plan.id)
       })
