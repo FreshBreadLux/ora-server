@@ -232,6 +232,7 @@ router.post('/', (req, res, next) => {
     notificationInterval: 30
   })
   .then(user => {
+    console.log('created user:', user)
     return res.status(201).send({
       userId: user.id,
       jwToken: createToken(user),
