@@ -242,7 +242,7 @@ router.post('/', (req, res, next) => {
 })
 
 router.post('/sessions', (req, res, next) => {
-  console.log('POSTING TO /SESSIONS WITH REQ.BODY:', req.body)
+  console.log('POSTING TO /SESSIONS WITH EMAIL:', req.body.email)
   if (!req.body.email || !req.body.password) {
     return res.status(400).send('You must send an email and password')
   }
