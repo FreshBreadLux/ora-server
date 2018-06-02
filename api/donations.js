@@ -33,7 +33,7 @@ router.post('/charges', (req, res, next) => {
 })
 
 router.post('/subscriptions', (req, res, next) => {
-  console.log('POSTING TO DONATIONS/SUBSCRIPTIONS')
+  console.log('HIT POST /SUBSCRIPTIONS WITH REQ.BODY:', req.body)
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     const { userId, amount } = req.body
