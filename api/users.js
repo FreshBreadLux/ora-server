@@ -124,6 +124,7 @@ router.put('/:userId', (req, res, next) => {
     User.findById(req.params.userId)
     .then(foundUser => foundUser.update(req.body))
     .then(updatedUser => {
+      console.log('User successfully updated!')
       const scrubbedUser = {
         email: updatedUser.email,
         id: updatedUser.id,
