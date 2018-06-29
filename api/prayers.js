@@ -25,12 +25,14 @@ async function registerNotification(updatedPrayer) {
       cancel: null,
       pushNotification: {
         to: updatedPrayer.user.pushToken,
+        title: 'Somone is praying for you',
+        body: `${updatedPrayer.subject}`,
         sound: 'default',
-        body: `Someone is praying for your intention: ${updatedPrayer.subject}`,
         data: {
-          type: 'new-view',
+          type: 'general-prayer',
           body: `Someone is praying for your intention: ${updatedPrayer.subject}`
         },
+        channelId: 'general-prayer'
       }
     }
     const cancellationToken = setTimeout(async () => {
@@ -47,12 +49,14 @@ async function registerNotification(updatedPrayer) {
       number: notificationQueues[prayerId].number + 1,
       pushNotification: {
         to: updatedPrayer.user.pushToken,
+        title: `${notificationQueues[prayerId].number + 1} people are praying for you`,
+        body: `${updatedPrayer.subject}`,
         sound: 'default',
-        body: `${notificationQueues[prayerId].number + 1} people are praying for your intention: ${updatedPrayer.subject}`,
         data: {
-          type: 'new-view',
+          type: 'general-prayer',
           body: `${notificationQueues[prayerId].number + 1} people are praying for your intention: ${updatedPrayer.subject}`
         },
+        channelId: 'general-prayer'
       }
     }
     const cancellationToken = setTimeout(async () => {
@@ -65,12 +69,14 @@ async function registerNotification(updatedPrayer) {
     // AND SET A TIMER TO RESET THE STATUS
     await expo.sendPushNotificationAsync({
       to: updatedPrayer.user.pushToken,
+      title: 'Someone is praying for you',
+      body: `${updatedPrayer.subject}`,
       sound: 'default',
-      body: `Someone is praying for your intention: ${updatedPrayer.subject}`,
       data: {
-        type: 'new-view',
-        body: `Someone is praying for your intention: ${updatedPrayer.subject}`
-      }
+        type: 'general-prayer',
+        body: `Someone is praying for you: ${updatedPrayer.subject}`
+      },
+      channelId: 'general-prayer'
     })
     notificationQueues[prayerId] = { sentOne: true }
     const cancellationToken = setTimeout(() => {

@@ -15,12 +15,14 @@ router.post('/', (req, res, next) => {
     .then(arrOfFollowers => {
       return arrOfFollowers.map(user => ({
         to: user.pushToken,
+        title: 'A prayer you are following was updated',
+        body: `${updatedPrayer.subject}`,
         sound: 'default',
-        body: `A prayer you are following was updated: ${updatedPrayer.subject}`,
         data: {
           type: 'follow-update',
           body: `A prayer you are following was updated: ${updatedPrayer.subject}`
-        }
+        },
+        channelId: 'follow-update'
       }))
     })
     .then(messages => expo.sendPushNotificationsAsync(messages))
