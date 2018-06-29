@@ -15,12 +15,14 @@ router.post('/', (req, res, next) => {
     if (Expo.isExpoPushToken(prayer.user.pushToken)) {
       return expo.sendPushNotificationAsync({
         to: prayer.user.pushToken,
+        title: 'Someone started following your prayer',
+        body: `${prayer.subject}`,
         sound: 'default',
-        body: `Someone started following your prayer: ${prayer.subject}`,
         data: {
           type: 'new-follow',
           body: `Someone started following your prayer: ${prayer.subject}`
         },
+        channelId: 'new-follow'
       })
     } else {
       console.error(`${prayer.user.pushToken} is not valid`)
@@ -58,12 +60,14 @@ router.put('/notify/followedId/:followedId', async (req, res, next) => {
     if (Expo.isExpoPushToken(prayer.user.pushToken)) {
       await expo.sendPushNotificationAsync({
         to: prayer.user.pushToken,
+        title: 'A follower is praying for you',
+        body: `${prayer.subject}`,
         sound: 'default',
-        body: `A follower is praying for your intention: ${prayer.subject}`,
         data: {
           type: 'follower-prayer',
-          body: `A follower is praying for your intention: ${prayer.subject}`
+          body: `A follower is praying for you: ${prayer.subject}`
         },
+        channelId: 'follower-prayer'
       })
       res.status(201).send(prayer)
     } else {
