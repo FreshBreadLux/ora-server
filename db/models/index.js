@@ -4,6 +4,7 @@ const Flag = require('./flag')
 const Follow = require('./follow')
 const FlagReason = require('./flagreason')
 const Update = require('./update')
+const Reflection = require('./reflection')
 const Share = require('./share')
 const Group = require('./group')
 
@@ -46,6 +47,7 @@ module.exports = {
   Flag,
   FlagReason,
   Update,
+  Reflection,
   Share,
   Group
 }
