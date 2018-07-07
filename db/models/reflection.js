@@ -7,8 +7,9 @@ const Reflection = db.define('reflection', {
     allowNull: false
   },
   date: {
-    type: Sequelize.DATE,
-    allowNull: false
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true
   }
 })
 

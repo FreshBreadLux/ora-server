@@ -7,8 +7,9 @@ const Reward = db.define('reward', {
     allowNull: false
   },
   date: {
-    type: Sequelize.DATE,
-    allowNull: false
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true
   },
   iconColor: {
     type: Sequelize.STRING,
