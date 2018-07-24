@@ -2,6 +2,6 @@
   "development": {
     "database": "ora-test",
     "host": "localhost",
-    "dialect": "mysql"
+    "dialect": "postgres"
   }
 }
