@@ -2,7 +2,15 @@ const Sequelize = require('sequelize')
 const db = require('../db')
 
 const Reflection = db.define('reflection', {
-  text: {
+  verse: {
+    type: Sequelize.TEXT,
+    allowNull: false
+  },
+  source: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  fullText: {
     type: Sequelize.TEXT,
     allowNull: false
   },
