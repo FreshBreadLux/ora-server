@@ -11,8 +11,7 @@ module.exports = {
     */
     return queryInterface.changeColumn('rewards', 'date', {
       type: Sequelize.STRING,
-      allowNull: false,
-      unique: true
+      allowNull: false
     })
   },
 
@@ -26,8 +25,7 @@ module.exports = {
     */
     return queryInterface.changeColumn('rewards', 'date', {
       type: Sequelize.DATE,
-      allowNull: false,
-      unique: true
+      allowNull: false
     })
   }
 };
