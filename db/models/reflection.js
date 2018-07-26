@@ -6,12 +6,16 @@ const Reflection = db.define('reflection', {
     type: Sequelize.TEXT,
     allowNull: false
   },
-  source: {
+  verseSource: {
     type: Sequelize.STRING,
     allowNull: false
   },
   fullText: {
     type: Sequelize.TEXT,
+    allowNull: false
+  },
+  fullSource: {
+    type: Sequelize.STRING,
     allowNull: false
   },
   date: {
