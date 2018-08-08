@@ -5,7 +5,7 @@ module.exports = router
 
 router.post('/', (req, res, next) => {
   User.findById(req.body.userId)
-  .then(foundUser => foundUser.addSaved(req.body.reward.id))
+  .then(foundUser => foundUser.addSaved(req.body.dailyReward.id))
   .then(newSavedReward => res.status(201).send(newSavedReward))
   .catch(next)
 })
