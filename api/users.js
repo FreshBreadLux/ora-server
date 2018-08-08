@@ -230,6 +230,7 @@ router.post('/', (req, res, next) => {
     totalSubmitted: 0,
     consecutiveDays: 0,
     prayedToday: false,
+    rewardUnlocked: false,
     theme: 'Rome',
     isAdmin: false,
     angelInvestor: false,
