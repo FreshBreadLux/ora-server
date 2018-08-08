@@ -195,7 +195,7 @@ router.get('/:userId/follows', (req, res, next) => {
 router.get('/:userId/savedRewards', (req, res, next) => {
   if (req.params.userId) {
     User.findById(req.params.userId)
-    .then(foundUser => foundUser.getSavedRewards({
+    .then(foundUser => foundUser.getSaved({
       order: [['createdAt', 'DESC']]
     }))
     .then(savedRewards => res.send(savedRewards))
