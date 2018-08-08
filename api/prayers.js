@@ -129,6 +129,7 @@ router.put('/next', async (req, res, next) => {
       theme: updatedUser.theme,
       consecutiveDays: updatedUser.consecutiveDays,
       prayedToday: updatedUser.prayedToday,
+      rewardUnlocked: updatedUser.rewardUnlocked,
       isAdmin: updatedUser.isAdmin,
       firstName: foundUser.firstName,
       lastName: foundUser.lastName,
