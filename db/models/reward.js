@@ -11,6 +11,14 @@ const Reward = db.define('reward', {
     allowNull: false,
     unique: true
   },
+  fullText: {
+    type: Sequelize.TEXT,
+    allowNull: false
+  },
+  fullSource: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
   iconColor: {
     type: Sequelize.STRING,
     allowNull: false
