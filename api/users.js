@@ -176,11 +176,7 @@ router.get('/:userId/prayers', (req, res, next) => {
 })
 
 router.get('/:userId/follows', (req, res, next) => {
-  console.log('GETTING FOLLOWS WITH USERID: ', req.params.userId)
-  console.log('req.params.userId === null: ', req.params.userId === null)
-  console.log('req.params.userId === (the string) null: ', req.params.userId === 'null')
   if (req.params.userId) {
-    console.log('MADE IT PAST THE CONDITIONAL LOGIC IN FOLLOWS WITH USERID: ', req.params.userId)
     User.findById(req.params.userId)
     .then(foundUser => foundUser.getFollowed({
       include: [Update],
@@ -190,6 +186,19 @@ router.get('/:userId/follows', (req, res, next) => {
       ]
     }))
     .then(follows => res.send(follows))
+    .catch(next)
+  } else {
+    return res.status(400).send('You must include a valid userId')
+  }
+})
+
+router.get('/:userId/savedRewards', (req, res, next) => {
+  if (req.params.userId) {
+    User.findById(req.params.userId)
+    .then(foundUser => foundUser.getSavedRewards({
+      order: [['createdAt', 'DESC']]
+    }))
+    .then(savedRewards => res.send(savedRewards))
     .catch(next)
   } else {
     return res.status(400).send('You must include a valid userId')
