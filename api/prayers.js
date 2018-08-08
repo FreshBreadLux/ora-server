@@ -120,7 +120,8 @@ router.put('/next', async (req, res, next) => {
     const totalPrayers = foundUser.totalPrayers
     const updatedUser = await foundUser.update({
       totalPrayers: totalPrayers + 1,
-      prayedToday: true
+      prayedToday: true,
+      rewardUnlocked: true
     })
     const scrubbedUser = {
       email: updatedUser.email,
