@@ -2,6 +2,7 @@ const router = require('express').Router()
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
 const Update = require('../db/models/update')
+const Artist = require('../db/models/artist')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 
@@ -196,6 +197,7 @@ router.get('/:userId/savedRewards', (req, res, next) => {
   if (req.params.userId) {
     User.findById(req.params.userId)
     .then(foundUser => foundUser.getSaved({
+      include: [Artist],
       order: [['createdAt', 'DESC']]
     }))
     .then(savedRewards => res.send(savedRewards))
