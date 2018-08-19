@@ -9,3 +9,12 @@ router.post('/', (req, res, next) => {
   .then(newSavedReward => res.status(201).send(newSavedReward))
   .catch(next)
 })
+
+router.delete('/savedId/:savedId/saverId/:saverId', (req, res, next) => {
+  User.findById(req.params.saverId)
+  .then(user => {
+    user.removeSaved(req.params.savedId)
+  })
+  .then(() => res.status(201).send('Saved reward successfully deleted'))
+  .catch(next)
+})
