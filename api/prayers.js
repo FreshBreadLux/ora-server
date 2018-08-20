@@ -121,7 +121,6 @@ router.put('/next', async (req, res, next) => {
     const updatedUser = await foundUser.update({
       totalPrayers: totalPrayers + 1,
       prayedToday: true,
-      rewardUnlocked: true
     })
     const scrubbedUser = {
       email: updatedUser.email,
@@ -130,7 +129,6 @@ router.put('/next', async (req, res, next) => {
       theme: updatedUser.theme,
       consecutiveDays: updatedUser.consecutiveDays,
       prayedToday: updatedUser.prayedToday,
-      rewardUnlocked: updatedUser.rewardUnlocked,
       isAdmin: updatedUser.isAdmin,
       firstName: foundUser.firstName,
       lastName: foundUser.lastName,

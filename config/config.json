@@ -1,6 +1,6 @@
 {
   "development": {
-    "database": "ora-test",
+    "database": "ora-staging",
     "host": "localhost",
     "dialect": "postgres"
   },

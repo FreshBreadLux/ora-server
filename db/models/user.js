@@ -41,10 +41,6 @@ const User = db.define('user', {
     defaultValue: false,
     allowNull: false
   },
-  rewardUnlocked: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false,
-  },
   theme: {
     type: Sequelize.STRING,
     defaultValue: 'Rome',
