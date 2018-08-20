@@ -1,2 +1,3 @@
 # ignore the secrets file
 /secrets.js
+/latest.dump
