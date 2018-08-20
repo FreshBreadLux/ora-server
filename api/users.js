@@ -253,10 +253,10 @@ router.post('/', (req, res, next) => {
     })
   })
   .catch(error => {
-    if (error.errors[0].message === 'Validation isEmail on email failed') {
+    if (error.errors && error.errors[0].message === 'Validation isEmail on email failed') {
       return res.status(405).send()
     }
-    if (error.errors[0].message === 'email must be unique') {
+    if (error.errors && error.errors[0].message === 'email must be unique') {
       return res.status(406).send()
     }
     return next(error)

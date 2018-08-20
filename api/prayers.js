@@ -159,6 +159,7 @@ router.put('/close/:prayerId', (req, res, next) => {
 })
 
 router.post('/', async (req, res, next) => {
+  console.log('req.body:', req.body)
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     const prayer = await Prayer.create(req.body)
