@@ -4,6 +4,9 @@ const Flag = require('./flag')
 const Follow = require('./follow')
 const FlagReason = require('./flagreason')
 const Update = require('./update')
+const Reflection = require('./reflection')
+const Reward = require('./reward')
+const Artist = require('./artist')
 const Share = require('./share')
 const Group = require('./group')
 
@@ -25,6 +28,11 @@ Flag.belongsTo(FlagReason)
 // Prayers getting updates
 Prayer.hasMany(Update)
 Update.belongsTo(Prayer)
+// Users saving rewards
+User.belongsToMany(Reward, { through: 'savedReward', as: 'saved', foreignKey: 'saverId' })
+Reward.belongsToMany(User, { through: 'savedReward', as: 'saver', foreignKey: 'savedId' })
+// Artists creating rewards
+Reward.belongsTo(Artist)
 
 /** Associations for version 2 **/
 // User sharing private prayers with other users
@@ -46,6 +54,9 @@ module.exports = {
   Flag,
   FlagReason,
   Update,
+  Reflection,
+  Reward,
+  Artist,
   Share,
   Group
 }

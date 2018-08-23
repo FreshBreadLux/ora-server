@@ -2,6 +2,7 @@ const router = require('express').Router()
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
 const Update = require('../db/models/update')
+const Artist = require('../db/models/artist')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 
@@ -57,6 +58,7 @@ router.get('/:userId', (req, res, next) => {
         totalPrayers: foundUser.totalPrayers,
         theme: foundUser.theme,
         consecutiveDays: foundUser.consecutiveDays,
+        prayedToday: foundUser.prayedToday,
         isAdmin: foundUser.isAdmin,
         firstName: foundUser.firstName,
         lastName: foundUser.lastName,
@@ -131,6 +133,7 @@ router.put('/:userId', (req, res, next) => {
         totalPrayers: updatedUser.totalPrayers,
         theme: updatedUser.theme,
         consecutiveDays: updatedUser.consecutiveDays,
+        prayedToday: updatedUser.prayedToday,
         isAdmin: updatedUser.isAdmin,
         firstName: updatedUser.firstName,
         lastName: updatedUser.lastName,
@@ -172,11 +175,7 @@ router.get('/:userId/prayers', (req, res, next) => {
 })
 
 router.get('/:userId/follows', (req, res, next) => {
-  console.log('GETTING FOLLOWS WITH USERID: ', req.params.userId)
-  console.log('req.params.userId === null: ', req.params.userId === null)
-  console.log('req.params.userId === (the string) null: ', req.params.userId === 'null')
   if (req.params.userId) {
-    console.log('MADE IT PAST THE CONDITIONAL LOGIC IN FOLLOWS WITH USERID: ', req.params.userId)
     User.findById(req.params.userId)
     .then(foundUser => foundUser.getFollowed({
       include: [Update],
@@ -186,6 +185,20 @@ router.get('/:userId/follows', (req, res, next) => {
       ]
     }))
     .then(follows => res.send(follows))
+    .catch(next)
+  } else {
+    return res.status(400).send('You must include a valid userId')
+  }
+})
+
+router.get('/:userId/savedRewards', (req, res, next) => {
+  if (req.params.userId) {
+    User.findById(req.params.userId)
+    .then(foundUser => foundUser.getSaved({
+      include: [Artist],
+      order: [['createdAt', 'DESC']]
+    }))
+    .then(savedRewards => res.send(savedRewards))
     .catch(next)
   } else {
     return res.status(400).send('You must include a valid userId')
@@ -240,10 +253,10 @@ router.post('/', (req, res, next) => {
     })
   })
   .catch(error => {
-    if (error.errors[0].message === 'Validation isEmail on email failed') {
+    if (error.errors && error.errors[0].message === 'Validation isEmail on email failed') {
       return res.status(405).send()
     }
-    if (error.errors[0].message === 'email must be unique') {
+    if (error.errors && error.errors[0].message === 'email must be unique') {
       return res.status(406).send()
     }
     return next(error)

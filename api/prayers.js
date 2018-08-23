@@ -120,7 +120,7 @@ router.put('/next', async (req, res, next) => {
     const totalPrayers = foundUser.totalPrayers
     const updatedUser = await foundUser.update({
       totalPrayers: totalPrayers + 1,
-      prayedToday: true
+      prayedToday: true,
     })
     const scrubbedUser = {
       email: updatedUser.email,
@@ -128,6 +128,7 @@ router.put('/next', async (req, res, next) => {
       totalPrayers: updatedUser.totalPrayers,
       theme: updatedUser.theme,
       consecutiveDays: updatedUser.consecutiveDays,
+      prayedToday: updatedUser.prayedToday,
       isAdmin: updatedUser.isAdmin,
       firstName: foundUser.firstName,
       lastName: foundUser.lastName,
@@ -158,6 +159,7 @@ router.put('/close/:prayerId', (req, res, next) => {
 })
 
 router.post('/', async (req, res, next) => {
+  console.log('req.body:', req.body)
   try {
     jwt.verify(req.headers.token, process.env.SECRET)
     const prayer = await Prayer.create(req.body)
