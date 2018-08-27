@@ -10,8 +10,15 @@ router.get('/', (req, res, next) => {
     include: [{ model: Artist }]
   })
   .then(dailyReward => {
-    if (dailyReward) return res.send(dailyReward)
-    else return res.send({ imageUrl: 'https://s3.us-east-2.amazonaws.com/ora-images/church-reflection.jpg', iconColor: '#fff' })
+    if (dailyReward) {
+      return res.send(dailyReward)
+    } else {
+      return Reward.findOne({
+        where: { id: 1 },
+        include: [{ model: Artist }]
+      })
+      .then(defaultReward => res.send(defaultReward))
+    }
   })
   .catch(next)
 })
