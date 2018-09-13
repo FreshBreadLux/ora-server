@@ -95,6 +95,9 @@ const User = db.define('user', {
   gender: {
     type: Sequelize.ENUM('Male', 'Female')
   },
+  imageUrl: {
+    type: Sequelize.TEXT
+  },
   // Unused as of version 1.0.1; may be used in later versions
   phoneNumber: {
     type: Sequelize.INTEGER
