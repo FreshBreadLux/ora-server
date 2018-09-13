@@ -130,13 +130,14 @@ router.put('/next', async (req, res, next) => {
       consecutiveDays: updatedUser.consecutiveDays,
       prayedToday: updatedUser.prayedToday,
       isAdmin: updatedUser.isAdmin,
-      firstName: foundUser.firstName,
-      lastName: foundUser.lastName,
-      investmentTotal: foundUser.investmentTotal,
-      oraMissionary: foundUser.oraMissionary,
-      city: foundUser.city,
-      state: foundUser.state,
-      address: foundUser.address
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      investmentTotal: updatedUser.investmentTotal,
+      oraMissionary: updatedUser.oraMissionary,
+      city: updatedUser.city,
+      state: updatedUser.state,
+      address: updatedUser.address,
+      imageUrl: updatedUser.imageUrl,
     }
     res.send({newView, updatedPrayer, scrubbedUser})
   } catch (err) {

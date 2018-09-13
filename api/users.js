@@ -67,6 +67,7 @@ router.get('/:userId', (req, res, next) => {
         city: foundUser.city,
         state: foundUser.state,
         address: foundUser.address,
+        imageUrl: foundUser.imageUrl,
       }
       return res.status(201).send(scrubbedUser)
     })
@@ -141,7 +142,8 @@ router.put('/:userId', (req, res, next) => {
         oraMissionary: updatedUser.oraMissionary,
         city: updatedUser.city,
         state: updatedUser.state,
-        address: updatedUser.address
+        address: updatedUser.address,
+        imageUrl: updatedUser.imageUrl,
       }
       return res.status(201).send(scrubbedUser)
     })
