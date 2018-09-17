@@ -22,6 +22,9 @@ const Reward = db.define('reward', {
   iconColor: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  thumbnailUrl: {
+    type: Sequelize.TEXT,
   }
 })
 
