@@ -68,6 +68,8 @@ router.get('/:userId', (req, res, next) => {
         state: foundUser.state,
         address: foundUser.address,
         imageUrl: foundUser.imageUrl,
+        age: foundUser.age,
+        gender: foundUser.gender,
       }
       return res.status(201).send(scrubbedUser)
     })
@@ -144,6 +146,8 @@ router.put('/:userId', (req, res, next) => {
         state: updatedUser.state,
         address: updatedUser.address,
         imageUrl: updatedUser.imageUrl,
+        age: updatedUser.age,
+        gender: updatedUser.gender,
       }
       return res.status(201).send(scrubbedUser)
     })
