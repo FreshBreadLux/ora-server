@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
 const Prayer = require('../db/models/prayer')
+const Follow = require('../db/models/follow')
 const Expo = require('expo-server-sdk')
 let expo = new Expo()
 
@@ -81,5 +82,17 @@ router.put('/notify/followedId/:followedId', async (req, res, next) => {
     }
   } catch (err) {
     next(err)
+  }
+})
+
+router.put('/followedId/:followedId/followerId/:followerId', async (req, res, next) => {
+  try {
+    const foundFollow = await Follow.findOne({
+      where: { followedId: req.params.followedId, followerId: req.params.followerId }
+    })
+    const updatedFollow = foundFollow.update(req.body)
+    return res.status(201).send(updatedFollow)
+  } catch (error) {
+    next(error)
   }
 })

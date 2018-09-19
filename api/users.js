@@ -154,11 +154,7 @@ router.put('/:userId', (req, res, next) => {
 })
 
 router.get('/:userId/prayers', (req, res, next) => {
-  console.log('GETTING PRAYERS WITH USERID: ', req.params.userId)
-  console.log('req.params.userId === null: ', req.params.userId === null)
-  console.log('req.params.userId === (the string) null: ', req.params.userId === 'null')
   if (req.params.userId) {
-    console.log('MADE IT PAST THE CONDITIONAL LOGIC IN PRAYERS WITH USERID: ', req.params.userId)
     Prayer.findAll({
       where: {
         userId: req.params.userId
@@ -248,7 +244,6 @@ router.post('/', (req, res, next) => {
     notificationInterval: 30
   })
   .then(user => {
-    console.log('created user:', user)
     return res.status(201).send({
       userId: user.id,
       jwToken: createToken(user),

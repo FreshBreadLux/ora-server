@@ -1,17 +1,27 @@
 const router = require('express').Router()
 const Update = require('../db/models/update')
+const Follow = require('../db/models/follow')
 const Expo = require('expo-server-sdk')
 let expo = new Expo()
 
 module.exports = router
 
-// update to use async / await and clean up logic of adding unseen updates
 router.post('/', async (req, res, next) => {
   try {
     const newUpdate = await Update.create(req.body)
     const updatedPrayer = await newUpdate.getPrayer()
     const followers = updatedPrayer.getFollower()
-    const messages = followers.map(user => {
+    const messages = followers.map(async user => {
+      console.log('user.follow.dataValues:', user.follow.dataValues)
+      const { followerId, followedId } = user.follow.dataValues
+      const foundFollow = await Follow.findOne({
+        where: { followerId, followedId }
+      })
+      const unseenUpdates = foundFollow.unseenUpdates
+      const updatedFollow = await foundFollow.update({
+        unseenUpdates: unseenUpdates + 1
+      })
+      console.log('updatedFollow:', updatedFollow)
       if (Expo.isExpoPushToken(user.pushToken)) {
         return {
           to: user.pushToken,
