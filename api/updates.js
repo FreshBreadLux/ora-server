@@ -5,30 +5,34 @@ let expo = new Expo()
 
 module.exports = router
 
-router.post('/', (req, res, next) => {
-  Update.create(req.body)
-  .then(newUpdate => {
-    return newUpdate.getPrayer()
-  })
-  .then(updatedPrayer => {
-    updatedPrayer.getFollower()
-    .then(arrOfFollowers => {
-      return arrOfFollowers.map(user => ({
-        to: user.pushToken,
-        title: 'A prayer you are following was updated',
-        body: `${updatedPrayer.subject}`,
-        sound: 'default',
-        data: {
-          type: 'follow-update',
-          body: `A prayer you are following was updated: ${updatedPrayer.subject}`
-        },
-        channelId: 'follow-update'
-      }))
+// update to use async / await and clean up logic of adding unseen updates
+router.post('/', async (req, res, next) => {
+  try {
+    const newUpdate = await Update.create(req.body)
+    const updatedPrayer = await newUpdate.getPrayer()
+    const followers = updatedPrayer.getFollower()
+    const messages = followers.map(user => {
+      if (Expo.isExpoPushToken(user.pushToken)) {
+        return {
+          to: user.pushToken,
+          title: 'A prayer you are following was updated',
+          body: `${updatedPrayer.subject}`,
+          sound: 'default',
+          data: {
+            type: 'follow-update',
+            body: `A prayer you are following was updated: ${updatedPrayer.subject}`
+          },
+          channelId: 'follow-update'
+        }
+      } else {
+        console.log(`${user.pushToken} is not a valid pushToken`)
+      }
     })
-    .then(messages => expo.sendPushNotificationsAsync(messages))
-  })
-  .then(() => res.status(200).send('Prayer successfully updated'))
-  .catch(next)
+    expo.sendPushNotificationsAsync(messages)
+    res.status(200).send('Prayer sucessfully updated')
+  } catch (error) {
+    next(error)
+  }
 })
 
 router.delete('/:updateId', (req, res, next) => {
