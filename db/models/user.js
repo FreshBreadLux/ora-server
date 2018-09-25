@@ -98,7 +98,6 @@ const User = db.define('user', {
   imageUrl: {
     type: Sequelize.TEXT
   },
-  // Unused as of version 1.0.1; may be used in later versions
   phoneNumber: {
     type: Sequelize.INTEGER
   },
@@ -110,6 +109,10 @@ const User = db.define('user', {
     type: Sequelize.INTEGER,
     defaultValue: 30
   },
+  notificationsEnabled: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+  }
 })
 
 module.exports = User
