@@ -246,7 +246,8 @@ router.post('/', (req, res, next) => {
     isAdmin: false,
     angelInvestor: false,
     oraMissionary: false,
-    notificationInterval: 30
+    notificationInterval: 30,
+    notificationsEnabled: false,
   })
   .then(user => {
     return res.status(201).send({
