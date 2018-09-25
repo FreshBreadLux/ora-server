@@ -71,6 +71,7 @@ router.get('/:userId', (req, res, next) => {
         age: foundUser.age,
         gender: foundUser.gender,
         notificationInterval: foundUser.notificationInterval,
+        notificationsEnabled: foundUser.notificationsEnabled,
       }
       return res.status(201).send(scrubbedUser)
     })
@@ -149,6 +150,7 @@ router.put('/:userId', (req, res, next) => {
         age: updatedUser.age,
         gender: updatedUser.gender,
         notificationInterval: updatedUser.notificationInterval,
+        notificationsEnabled: updatedUser.notificationsEnabled,
       }
       return res.status(201).send(scrubbedUser)
     })

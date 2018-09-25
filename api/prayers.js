@@ -141,6 +141,7 @@ router.put('/next', async (req, res, next) => {
       age: updatedUser.age,
       gender: updatedUser.gender,
       notificationInterval: updatedUser.notificationInterval,
+      notificationsEnabled: updatedPrayer.notificationsEnabled,
     }
     res.send({newView, updatedPrayer, scrubbedUser})
   } catch (err) {
