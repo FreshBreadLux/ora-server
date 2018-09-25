@@ -140,6 +140,7 @@ router.put('/next', async (req, res, next) => {
       imageUrl: updatedUser.imageUrl,
       age: updatedUser.age,
       gender: updatedUser.gender,
+      notificationInterval: updatedUser.notificationInterval,
     }
     res.send({newView, updatedPrayer, scrubbedUser})
   } catch (err) {

@@ -70,6 +70,7 @@ router.get('/:userId', (req, res, next) => {
         imageUrl: foundUser.imageUrl,
         age: foundUser.age,
         gender: foundUser.gender,
+        notificationInterval: foundUser.notificationInterval,
       }
       return res.status(201).send(scrubbedUser)
     })
@@ -123,7 +124,6 @@ router.put('/resetPassword', async (req, res, next) => {
 })
 
 router.put('/:userId', (req, res, next) => {
-  console.log('HIT PUT USERS/:USERID')
   console.log('REQ.BODY: ', req.body)
   if (req.params.userId) {
     User.findById(req.params.userId)
@@ -148,6 +148,7 @@ router.put('/:userId', (req, res, next) => {
         imageUrl: updatedUser.imageUrl,
         age: updatedUser.age,
         gender: updatedUser.gender,
+        notificationInterval: updatedUser.notificationInterval,
       }
       return res.status(201).send(scrubbedUser)
     })
@@ -265,7 +266,6 @@ router.post('/', (req, res, next) => {
 })
 
 router.post('/sessions', (req, res, next) => {
-  console.log('POSTING TO /SESSIONS WITH EMAIL:', req.body.email)
   if (!req.body.email || !req.body.password) {
     return res.status(400).send('You must send an email and password')
   }
@@ -274,7 +274,6 @@ router.post('/sessions', (req, res, next) => {
     if (!foundUser || !foundUser.correctPassword(req.body.password)) {
       return res.status(401).send('The email or password is incorrect')
     } else {
-      console.log('Found user:', foundUser)
       return res.status(201).send({
         userId: foundUser.id,
         jwToken: createToken(foundUser)
