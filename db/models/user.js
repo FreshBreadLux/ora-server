@@ -111,7 +111,7 @@ const User = db.define('user', {
   },
   notificationsEnabled: {
     type: Sequelize.BOOLEAN,
-    defaultValue: false,
+    defaultValue: true,
   }
 })
 
