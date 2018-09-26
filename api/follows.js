@@ -13,7 +13,7 @@ router.post('/', (req, res, next) => {
   .then(newFollow => {
     let prayer = req.body.currentPrayer
     res.status(201).send(newFollow)
-    if (Expo.isExpoPushToken(prayer.user.pushToken)) {
+    if (Expo.isExpoPushToken(prayer.user.pushToken) && prayer.user.notificationsEnabled) {
       return expo.sendPushNotificationAsync({
         to: prayer.user.pushToken,
         title: 'Someone started following your prayer',
@@ -26,7 +26,7 @@ router.post('/', (req, res, next) => {
         channelId: 'new-follow'
       })
     } else {
-      console.error(`${prayer.user.pushToken} is not valid`)
+      console.error('The recipient has not enabled push notifications')
     }
   })
   .then(() => {
@@ -58,7 +58,7 @@ router.put('/notify/followedId/:followedId', async (req, res, next) => {
       where: { id: req.params.followedId },
       include: [{model: User}]
     })
-    if (Expo.isExpoPushToken(prayer.user.pushToken)) {
+    if (Expo.isExpoPushToken(prayer.user.pushToken) && prayer.user.notificationsEnabled) {
       await expo.sendPushNotificationAsync({
         to: prayer.user.pushToken,
         title: 'A follower is praying for you',
@@ -72,7 +72,7 @@ router.put('/notify/followedId/:followedId', async (req, res, next) => {
       })
       res.status(201).send(prayer)
     } else {
-      console.error(`${prayer.user.pushToken} is not valid`)
+      console.error('The recipient has not enabled push notifications')
       res.status(201).send(prayer)
     }
     if (req.body.followerId) {

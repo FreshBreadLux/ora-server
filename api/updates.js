@@ -22,7 +22,7 @@ router.post('/', async (req, res, next) => {
         unseenUpdates: unseenUpdates + 1
       })
       console.log('updatedFollow:', updatedFollow)
-      if (Expo.isExpoPushToken(user.pushToken)) {
+      if (Expo.isExpoPushToken(user.pushToken) && user.notificationsEnabled) {
         return {
           to: user.pushToken,
           title: 'A prayer you are following was updated',
@@ -35,7 +35,7 @@ router.post('/', async (req, res, next) => {
           channelId: 'follow-update'
         }
       } else {
-        console.log(`${user.pushToken} is not a valid pushToken`)
+        console.log('The recipient has not enabled push notifications')
       }
     })
     expo.sendPushNotificationsAsync(messages)
