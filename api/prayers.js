@@ -111,10 +111,10 @@ router.put('/next', async (req, res, next) => {
     const updatedPrayer = await prayer.update({
       totalViews: totalViews + 1,
     })
-    if (Expo.isExpoPushToken(prayer.user.pushToken)) {
+    if (Expo.isExpoPushToken(prayer.user.pushToken) && prayer.user.notificationsEnabled) {
       registerNotification(updatedPrayer)
     } else {
-      console.error(`${updatedPrayer.user.pushToken} is not valid`)
+      console.error('the recipient has not enabled push notifications')
     }
     const foundUser = await User.findById(req.body.userId)
     const totalPrayers = foundUser.totalPrayers
