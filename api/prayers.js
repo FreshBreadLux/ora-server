@@ -91,6 +91,7 @@ router.put('/next', async (req, res, next) => {
     const totalViews = prayer.totalViews
     const updatedPrayer = await prayer.update({
       totalViews: totalViews + 1,
+      viewedToday: true,
     })
     if (Expo.isExpoPushToken(prayer.user.pushToken) && prayer.user.notificationsEnabled) {
       registerNotification(updatedPrayer)
