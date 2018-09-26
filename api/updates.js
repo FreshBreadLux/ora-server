@@ -12,7 +12,6 @@ router.post('/', async (req, res, next) => {
     const updatedPrayer = await newUpdate.getPrayer()
     const followers = updatedPrayer.getFollower()
     const messages = followers.map(async user => {
-      console.log('user.follow.dataValues:', user.follow.dataValues)
       const { followerId, followedId } = user.follow.dataValues
       const foundFollow = await Follow.findOne({
         where: { followerId, followedId }

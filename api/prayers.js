@@ -11,18 +11,43 @@ module.exports = router
 
 const notificationQueues = {}
 
-// THE FUNCTION REGISTERNOTIFICATION HANDLES NOTIFICATION BATCHING
-async function registerNotification(updatedPrayer) {
-  const ONE_HALF_HOUR = 1000 * 60 * 30
+/*
+  registrationNotification handles notification batching. Rather than immediately send a
+  notifiation, it places the notification object into a global object called notificationQueues
+  using the user's ID as the key. It starts a setTimeout to send the notification after the user's
+  notification interval has expired. If another notification is triggered during that timespan,
+  the notifications are combined into a single notification.
+*/
+function registerNotification(updatedPrayer) {
+  const notificationInterval = 1000 * 60 * updatedPrayer.user.notificationInterval
   const prayerId = updatedPrayer.id
-  if (notificationQueues[prayerId] && notificationQueues[prayerId].sentOne === true) {
-    // IF A USER HAS RECENTLY RECEIVED ONE NOTIFICATION, CANCEL THE RESET AND
-    // QUEUE ANOTHER TO BE SENT IN A HALF HOUR
-    clearTimeout(notificationQueues[prayerId].cancelReset)
+  if (notificationQueues[prayerId]) {
+    /*
+      If there is already a queue of notifications, consolidate the notifications into one
+      notification that totals the number of people praying and generalizes the message.
+    */
+    notificationQueues[prayerId] = {
+      ...notificationQueues[prayerId],
+      number: notificationQueues[prayerId].number + 1,
+      pushNotification: {
+        to: updatedPrayer.user.pushToken,
+        title: `${notificationQueues[prayerId].number + 1} people are praying for you`,
+        body: `${updatedPrayer.subject}`,
+        sound: 'default',
+        data: {
+          type: 'general-prayer',
+          body: `${notificationQueues[prayerId].number + 1} people are praying for the requests you've submitted`
+        },
+        channelId: 'general-prayer'
+      }
+    }
+  } else {
+    /*
+      If this is the first notification within the notification interval, place it in the queue and
+      start a setTimeout for the user's notification interval.
+    */
     notificationQueues[prayerId] = {
       number: 1,
-      sentOne: false,
-      cancel: null,
       pushNotification: {
         to: updatedPrayer.user.pushToken,
         title: 'Somone is praying for you',
@@ -35,54 +60,10 @@ async function registerNotification(updatedPrayer) {
         channelId: 'general-prayer'
       }
     }
-    const cancellationToken = setTimeout(async () => {
+    setTimeout(async () => {
       await expo.sendPushNotificationAsync(notificationQueues[prayerId].pushNotification)
       notificationQueues[prayerId] = null
-    }, ONE_HALF_HOUR)
-    notificationQueues[prayerId].cancelNotification = cancellationToken
-  } else if (notificationQueues[prayerId]) {
-    // IF THERE IS ALREADY A QUEUE OF NOTIFICATIONS, COMBINE THEM AND SET A
-    // NEW TIMER FOR THEM TO BE SENT
-    clearTimeout(notificationQueues[prayerId].cancelNotification)
-    notificationQueues[prayerId] = {
-      ...notificationQueues[prayerId],
-      number: notificationQueues[prayerId].number + 1,
-      pushNotification: {
-        to: updatedPrayer.user.pushToken,
-        title: `${notificationQueues[prayerId].number + 1} people are praying for you`,
-        body: `${updatedPrayer.subject}`,
-        sound: 'default',
-        data: {
-          type: 'general-prayer',
-          body: `${notificationQueues[prayerId].number + 1} people are praying for your intention: ${updatedPrayer.subject}`
-        },
-        channelId: 'general-prayer'
-      }
-    }
-    const cancellationToken = setTimeout(async () => {
-      await expo.sendPushNotificationAsync(notificationQueues[prayerId].pushNotification)
-      notificationQueues[prayerId] = null
-    }, ONE_HALF_HOUR)
-    notificationQueues[prayerId].cancelNotification = cancellationToken
-  } else {
-    // IF THIS IS THE FIRST NOTIFICATION IN A HALF HOUR, SEND IT, SET THE STATUS,
-    // AND SET A TIMER TO RESET THE STATUS
-    await expo.sendPushNotificationAsync({
-      to: updatedPrayer.user.pushToken,
-      title: 'Someone is praying for you',
-      body: `${updatedPrayer.subject}`,
-      sound: 'default',
-      data: {
-        type: 'general-prayer',
-        body: `Someone is praying for you: ${updatedPrayer.subject}`
-      },
-      channelId: 'general-prayer'
-    })
-    notificationQueues[prayerId] = { sentOne: true }
-    const cancellationToken = setTimeout(() => {
-      notificationQueues[prayerId] = null
-    }, ONE_HALF_HOUR)
-    notificationQueues[prayerId].cancelReset = cancellationToken
+    }, notificationInterval)
   }
 }
 
