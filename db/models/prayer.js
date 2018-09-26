@@ -29,7 +29,6 @@ const Prayer = db.define('prayer', {
     type: Sequelize.INTEGER,
     allowNull: false
   },
-  // Unused as of version 1.0.1; may be used in later versions
   unseenViews: {
     type: Sequelize.INTEGER,
     allowNull: false,
@@ -39,6 +38,10 @@ const Prayer = db.define('prayer', {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0
+  },
+  viewedToday: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
   }
 })
 
