@@ -82,7 +82,7 @@ router.put('/next', async (req, res, next) => {
         model: Update
       }],
       order: [
-        ['totalViews'],
+        ['viewedToday'], ['totalViews'],
         [{model: Update}, 'createdAt']
       ]
     })
