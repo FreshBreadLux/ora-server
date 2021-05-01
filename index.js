@@ -1,8 +1,6 @@
-require('newrelic')
 const path = require('path')
 const express = require('express')
 const morgan = require('morgan')
-const bodyParser = require('body-parser')
 const compression = require('compression')
 const passport = require('passport')
 const session = require('express-session')
@@ -38,8 +36,8 @@ const createApp = () => {
   app.use(morgan('dev'))
 
   // body parsing middleware
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
 
   // compression middleware
   app.use(compression())
