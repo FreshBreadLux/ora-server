@@ -80,7 +80,7 @@ const createApp = () => {
 
 const startListening = () => {
   // start listening (and create a 'server' object representing our server)
-  const server = app.listen(PORT, () => console.log(`Connecting prayers on port ${PORT}`))
+  const server = app.listen(PORT, () => console.log(`${PORT}: Oremus...`))
 }
 
 const syncDb = () => db.sync()
